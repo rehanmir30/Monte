@@ -48,9 +48,9 @@ class UserModel {
 
 class Detail {
   int? id;
-  String? userId;
+  int? userId;
   DateTime? dob;
-  String? levelId;
+  int? levelId;
 
   Detail({
     this.id,

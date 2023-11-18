@@ -11,6 +11,7 @@ TextEditingController _phone=TextEditingController();
 TextEditingController get phone=>_phone;
 
 int _timerSeconds = 120;
+
 int get timerSeconds=>_timerSeconds;
 
 bool _isButtonDisabled=false;
@@ -20,6 +21,7 @@ bool get isButtonDisabled=>_isButtonDisabled;
 
 TextEditingController _otp=TextEditingController();
 TextEditingController get otp=>_otp;
+
 
 setNameController(String txt){
   _phone.text=txt;

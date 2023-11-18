@@ -164,7 +164,7 @@ class DatabaseHelper {
       "Accept": "application/json",
       "Authorization": "Bearer $accessToken"
     };
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getPackage + id);
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getPackage + id.toString());
     var response = await http.get(url, headers: headers);
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {

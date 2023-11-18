@@ -1,6 +1,6 @@
 class ApiConstants{
 
-  static const baseUrl="https://atifsaeed.a2hosted.com/api/";
+  static const baseUrl="https://montee.site/api/";
 
   //Get levels
   static const levelUrl = "levels";
