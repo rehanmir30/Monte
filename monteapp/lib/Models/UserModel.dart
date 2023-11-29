@@ -9,13 +9,13 @@ UserModel userModelFromMap(String str) => UserModel.fromMap(json.decode(str));
 String userModelToMap(UserModel data) => json.encode(data.toMap());
 
 class UserModel {
-  int? id;
-  String? name;
-  String? phone;
-  String? email;
-  String? approved;
+  var id;
+  var name;
+  var phone;
+  var email;
+  var approved;
   Detail? detail;
-  String? accessToken;
+  var accessToken;
 
   UserModel({
     this.id,
@@ -34,6 +34,7 @@ class UserModel {
     email: json["email"],
     approved: json["approved"],
     detail: json["detail"] == null ? null : Detail.fromMap(json["detail"]),
+
   );
 
   Map<String, dynamic> toMap() => {
@@ -43,14 +44,26 @@ class UserModel {
     "email": email,
     "approved": approved,
     "detail": detail?.toMap(),
+    "accessToken":accessToken
   };
+
+  factory UserModel.fromSharedPrefMap(Map<String, dynamic> json) => UserModel(
+    id: json["id"],
+    name: json["name"],
+    phone: json["phone"],
+    email: json["email"],
+    approved: json["approved"],
+    detail: json["detail"] == null ? null : Detail.fromMap(json["detail"]),
+    accessToken: json["accessToken"]
+
+  );
 }
 
 class Detail {
-  int? id;
-  int? userId;
+  var id;
+  var userId;
   DateTime? dob;
-  int? levelId;
+  var levelId;
 
   Detail({
     this.id,

@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:monteapp/Controllers/CardController.dart';
+import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Controllers/LevelsController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
+import 'package:monteapp/Controllers/ShopController.dart';
 import 'package:monteapp/Controllers/SignupController.dart';
 import 'package:monteapp/Controllers/UserController.dart';
 
@@ -15,6 +17,8 @@ class InitController with Bindings{
     Get.put(UserController(),permanent: true);
     Get.put(CardController(),permanent: true);
     Get.put(MainCategoryController(),permanent: true);
+    Get.put(ShopController(),permanent: true);
+    Get.put(CartController(),permanent: true);
   }
 
 

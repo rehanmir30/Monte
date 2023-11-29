@@ -100,10 +100,19 @@ class _VideoScreenPortraitState extends State<VideoScreenPortrait>
                       onTap: () async {
                         await DatabaseHelper().playTapAudio();
                         List<String> _videoList=[];
+                        if(widget._videoList[index].the1080==null){
+                          widget._videoList[index].the1080=widget._videoList[index].the480;
+                        }
+                        if(widget._videoList[index].the720==null){
+                          widget._videoList[index].the720=widget._videoList[index].the480;
+                        }
+                        if(widget._videoList[index].the360==null){
+                          widget._videoList[index].the360=widget._videoList[index].the480;
+                        }
                         _videoList.add(widget._videoList[index].the1080!);
                         _videoList.add(widget._videoList[index].the720!);
                         _videoList.add(widget._videoList[index].the480!);
-                        Get.to(VideoPlayer(_videoList),
+                        Get.to(VideoPlayer(_videoList,widget._videoList[index].title!),
                             transition: Transition.zoom);
                       },
                       child: Transform.translate(
@@ -227,10 +236,19 @@ class _VideoScreenLandscapeState extends State<VideoScreenLandscape>
                           onTap: () async {
                             await DatabaseHelper().playTapAudio();
                             List<String> _videoList=[];
+                            if(widget._videoList[index].the1080==null){
+                              widget._videoList[index].the1080=widget._videoList[index].the480;
+                            }
+                            if(widget._videoList[index].the720==null){
+                              widget._videoList[index].the720=widget._videoList[index].the480;
+                            }
+                            if(widget._videoList[index].the360==null){
+                              widget._videoList[index].the360=widget._videoList[index].the480;
+                            }
                             _videoList.add(widget._videoList[index].the1080!);
                             _videoList.add(widget._videoList[index].the720!);
                             _videoList.add(widget._videoList[index].the480!);
-                            Get.to(VideoPlayer(_videoList), transition: Transition.zoom);
+                            Get.to(VideoPlayer(_videoList,widget._videoList[index].title!), transition: Transition.zoom);
                           },
                           child: Transform.translate(
                             offset: Offset(0, xOffset),

@@ -1,45 +1,45 @@
+// To parse this JSON data, do
+//
+//     final shopModel = shopModelFromMap(jsonString);
+
 import 'dart:convert';
 
-PackageModel packageModelFromMap(String str) => PackageModel.fromMap(json.decode(str));
+import 'ShopProduct.dart';
 
-String packageModelToMap(PackageModel data) => json.encode(data.toMap());
+ShopModel shopModelFromMap(String str) => ShopModel.fromMap(json.decode(str));
 
-class PackageModel {
-  var id;
-  var name;
-  var description;
-  var price;
-  var levelId;
+String shopModelToMap(ShopModel data) => json.encode(data.toMap());
+
+class ShopModel {
+  int? id;
+  String? name;
+  int? levelId;
   DateTime? createdAt;
   DateTime? updatedAt;
+  List<ShopProduct>? products=[];
 
-  PackageModel({
+  ShopModel({
     this.id,
     this.name,
-    this.description,
-    this.price,
     this.levelId,
     this.createdAt,
     this.updatedAt,
+    this.products,
   });
 
-  factory PackageModel.fromMap(Map<String, dynamic> json) => PackageModel(
+  factory ShopModel.fromMap(Map<String, dynamic> json) => ShopModel(
     id: json["id"],
     name: json["name"],
-    description: json["description"],
-    price: json["price"],
     levelId: json["level_id"],
     createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
     updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-  );
+    );
 
   Map<String, dynamic> toMap() => {
     "id": id,
     "name": name,
-    "description": description,
-    "price": price,
     "level_id": levelId,
     "created_at": createdAt?.toIso8601String(),
     "updated_at": updatedAt?.toIso8601String(),
-  };
+    };
 }

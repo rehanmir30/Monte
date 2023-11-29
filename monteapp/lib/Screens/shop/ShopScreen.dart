@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Screens/shop/Tabs/ReadablesLandscape.dart';
 import 'package:monteapp/Screens/shop/Tabs/ReadablesPortrait.dart';
 import 'package:monteapp/Screens/shop/Tabs/ToysLandscape.dart';
 import 'package:monteapp/Screens/shop/Tabs/ToysPortrait.dart';
 
 import '../../Constants/colors.dart';
+import '../../Controllers/CartController.dart';
+import 'CartScreen.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -37,6 +40,11 @@ class _ShopScreenState extends State<ShopScreen> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
+    getProducts();
+  }
+  getProducts()async{
+    await DatabaseHelper().getShopProducts("material");
+    await DatabaseHelper().getShopProducts("toys");
   }
   @override
   void dispose() {
@@ -69,6 +77,7 @@ class _ShopPortraitState extends State<ShopPortrait>
     });
   }
 
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -89,6 +98,40 @@ class _ShopPortraitState extends State<ShopPortrait>
                     fit: BoxFit.cover,
                     image: AssetImage("assets/images/loginBgLandscape.jpg"))),
           ),
+          Positioned(
+              right: 0,
+              top: 10,
+              child: InkWell(
+                  onTap: (){
+                    Get.to(const CartScreen(),transition: Transition.zoom);
+                  },
+                  child:Container(
+                      width: 80,
+                      height: 80,
+                      child: Stack(
+                        children: [
+                          Image.asset("assets/images/cartIcon.png"),
+                          Positioned(
+                            right: 20,
+                            top: 10,
+                            child: GetBuilder<CartController>(builder: (controller2) {
+                              return  Visibility(
+                                visible: controller2.cartModel==null?false:true,
+                                child: Container(
+                                  width: 15,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                      color: kRed,
+                                      shape: BoxShape.circle
+                                  ),
+                                ),
+                              );
+                            },)
+                            ,
+                          )
+                        ],
+                      ))
+              )),
           const Positioned(
               top: 60,
               child: Text(

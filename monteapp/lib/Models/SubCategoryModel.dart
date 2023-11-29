@@ -9,10 +9,10 @@ SubCategoryModel subCategoryModelFromMap(String str) => SubCategoryModel.fromMap
 String subCategoryModelToMap(SubCategoryModel data) => json.encode(data.toMap());
 
 class SubCategoryModel {
-  int? id;
-  String? name;
-  String? mainCategoryId;
-  String? description;
+  var id;
+  var name;
+  var mainCategoryId;
+  var description;
 
   SubCategoryModel({
     this.id,

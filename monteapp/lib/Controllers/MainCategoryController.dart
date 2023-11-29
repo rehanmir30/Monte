@@ -10,5 +10,8 @@ class MainCategoryController extends GetxController{
     _mainCategoryList.add(_model);
     update();
   }
+  clearCategoryList(){
+    _mainCategoryList.clear();
+  }
 
 }

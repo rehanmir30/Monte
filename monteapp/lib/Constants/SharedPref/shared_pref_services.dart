@@ -18,7 +18,7 @@ class SharedPref {
     final prefs = await SharedPreferences.getInstance();
     final userModelJson = prefs.getString(_keyUser);
     if (userModelJson != null) {
-      UserModel? userModel = UserModel.fromMap(jsonDecode(userModelJson));
+      UserModel? userModel = UserModel.fromSharedPrefMap(jsonDecode(userModelJson));
       return userModel;
     }
     return null;

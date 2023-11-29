@@ -5,10 +5,10 @@ MainCategoryModel mainCategoryModelFromMap(String str) => MainCategoryModel.from
 String mainCategoryModelToMap(MainCategoryModel data) => json.encode(data.toMap());
 
 class MainCategoryModel {
-  int? id;
-  String? name;
-  String? levelId;
-  String? isGame;
+  var id;
+  var name;
+  var levelId;
+  var isGame;
   dynamic description;
 
   MainCategoryModel({

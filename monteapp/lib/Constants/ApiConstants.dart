@@ -1,6 +1,7 @@
 class ApiConstants{
 
-  static const baseUrl="https://montee.site/api/";
+  // static const baseUrl="https://montee.site/api/";
+  static const baseUrl="https://atifsaeed.a2hosted.com/api/";
 
   //Get levels
   static const levelUrl = "levels";
@@ -18,7 +19,7 @@ class ApiConstants{
   static const getPackage = "package?level_id=";
 
   //make payment
-  static const makePayment = "payment?";
+  static const makePayment = "buy-package?";
 
   //get main category
   static const mainCategory = "main/category?level_id=";
@@ -28,4 +29,21 @@ class ApiConstants{
 
   //get video
   static const getVideos = "videos?category_id=";
+
+  //get shop product
+  static const getShopProduct = "products?";
+
+  //Add product to cart
+  static const addProductToCart = "add-to-cart?";
+
+  //Get cart
+  static const getCart = "cart?";
+
+  //Order Payment
+  static const orderPayment = "order-place?";
+
+  //Remove product from cart
+  static const removeProductFromCart = "remove-cart?";
+
+
 }

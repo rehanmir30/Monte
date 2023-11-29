@@ -4,11 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:monteapp/Controllers/CardController.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
+import '../../Constants/colors.dart';
 import '../../Database/databasehelper.dart';
 
 class BuyPackage extends StatefulWidget {
-  final String price;
-  const BuyPackage(this.price,{super.key});
+  final  price;
+final String callingScreenName;
+  const BuyPackage(this.price,this.callingScreenName, {super.key});
 
   @override
   State<BuyPackage> createState() => _BuyPackageState();
@@ -20,25 +22,26 @@ class _BuyPackageState extends State<BuyPackage> {
     return OrientationBuilder(
       builder: (context, orientation) {
         if (orientation == Orientation.portrait) {
-          return  BuyPackagePortrait(widget.price);
+          return BuyPackagePortrait(widget.price,widget.callingScreenName);
         } else {
-          return  BuyPackageLandscape(widget.price);
-
+          return BuyPackageLandscape(widget.price,widget.callingScreenName);
         }
       },
     );
   }
 }
+
 class BuyPackagePortrait extends StatefulWidget {
-  final String price;
-  const BuyPackagePortrait(this.price,{super.key});
+  final price;
+  final String callingScreenName;
+  const BuyPackagePortrait(this.price,this.callingScreenName, {super.key});
 
   @override
   State<BuyPackagePortrait> createState() => _BuyPackagePortraitState();
 }
 
-class _BuyPackagePortraitState extends State<BuyPackagePortrait> with SingleTickerProviderStateMixin{
-
+class _BuyPackagePortraitState extends State<BuyPackagePortrait>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -55,14 +58,15 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait> with SingleTick
         curve: Curves.easeInOut,
       ),
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          _controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _controller.forward();
+        }
+      });
     _controller.forward();
   }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -88,13 +92,21 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait> with SingleTick
                 builder: (context, child) {
                   return Transform.rotate(
                     angle: _animation.value,
-                    child: Image.asset("assets/images/balloons.png",width: 250,height: 250,), // Replace with your balloon image
+                    child: Image.asset(
+                      "assets/images/balloons.png",
+                      width: 250,
+                      height: 250,
+                    ), // Replace with your balloon image
                   );
                 },
               )),
           Positioned(
               bottom: 10,
-              child: Image.asset("assets/images/homeCart.png",width: 100,height: 100,)),
+              child: Image.asset(
+                "assets/images/homeCart.png",
+                width: 100,
+                height: 100,
+              )),
           Positioned(
             top: 55,
             child: Container(
@@ -102,282 +114,299 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait> with SingleTick
                 height: 450,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                      fit: BoxFit.fitHeight,
-                      image: AssetImage("assets/images/loginPotraitContainer.png"),
-                    )),
-                child: GetBuilder<CardController>(builder: (controller) {
-                  return Column(
-                    children: [
-                      Container(
-                        width: 65,
-                        height: 75,
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(
-                                    "assets/images/LoginPortraitMonte.png"))),
-                      ).marginOnly(right: 10),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.nameController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Name on card',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.cardNumberController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Card number',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ).marginOnly(top: 10),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            readOnly: true,
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                              DateTime? picked=await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2020),
-                                lastDate: DateTime(2025),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData.light().copyWith(
-                                      primaryColor: const Color(0xffD90F4E),
-                                      accentColor: const Color(0xffD90F4E),
-                                      colorScheme: const ColorScheme.light(primary: Colors.pink),
-                                      buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
-                                    ),
-                                    child: child!,
-                                  );
-                                },
-                              );
-                              if (picked != null) {
-                                final formattedDate = DateFormat('yyyy-MM').format(picked);
-                                controller.expDateController.text=formattedDate;
-                              }
-                            },
-                            controller: controller.expDateController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Exp (Month/Year)',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ).marginOnly(top: 10),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.cvvController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'CVV',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ).marginOnly(top: 10),
-                      Material(
+                  fit: BoxFit.fitHeight,
+                  image: AssetImage("assets/images/loginPotraitContainer.png"),
+                )),
+                child: GetBuilder<CardController>(
+                  builder: (controller) {
+                    return Column(
+                      children: [
+                        Container(
+                          width: 65,
+                          height: 75,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      "assets/images/LoginPortraitMonte.png"))),
+                        ).marginOnly(right: 10),
+                        Material(
                           elevation: 10,
-                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(60),
-                          child: InkWell(
-                            onTap: () async{
-                              await DatabaseHelper().playTapAudio();
-                              if(controller.expDateController.text.isEmpty)
-{
-  CustomSnackbar.show("All fields are required", Colors.white);
-  return;
-}else{await DatabaseHelper().makePayment(widget.price);}
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              width: 150,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(60),
-                                border: Border.all(color: Colors.yellow),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xff104e99),
-                                    Color(0xff8dabc9)
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                              },
+                              controller: controller.nameController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'Name on card',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(60),
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                              },
+                              controller: controller.cardNumberController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'Card number',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ).marginOnly(top: 10),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(60),
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              readOnly: true,
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                                DateTime? picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2025),
+                                  builder:
+                                      (BuildContext context, Widget? child) {
+                                    return Theme(
+                                      data: ThemeData.light().copyWith(
+                                        primaryColor: const Color(0xffD90F4E),
+                                        accentColor: const Color(0xffD90F4E),
+                                        colorScheme: const ColorScheme.light(
+                                            primary: Colors.pink),
+                                        buttonTheme: const ButtonThemeData(
+                                            textTheme: ButtonTextTheme.primary),
+                                      ),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (picked != null) {
+                                  final formattedDate =
+                                      DateFormat('yyyy-MM').format(picked);
+                                  controller.expDateController.text =
+                                      formattedDate;
+                                }
+                              },
+                              controller: controller.expDateController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'Exp (Month/Year)',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ).marginOnly(top: 10),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(60),
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                              },
+                              controller: controller.cvvController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'CVV',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ).marginOnly(top: 10),
+                        Material(
+                            elevation: 10,
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(60),
+                            child: InkWell(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                                if (controller.nameController.text.isEmpty ||
+                                    controller.cardNumberController.text.isEmpty ||
+                                    controller.cvvController.text.isEmpty||
+                                    controller.expDateController.text.isEmpty) {
+                                  CustomSnackbar.show(
+                                      "All fields are required", kRed);
+                                  return;
+                                } else {
+                                  if(widget.callingScreenName=="BuyPackage"){
+                                    await DatabaseHelper()
+                                        .makePayment(widget.price);
+                                  }else{
+                                    await DatabaseHelper().placeOrder(widget.price);
+                                  }
+
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 150,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
+                                  border: Border.all(color: Colors.yellow),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xff104e99),
+                                      Color(0xff8dabc9)
+                                    ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Make payment",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
                                 ),
                               ),
-                              child: const Text(
-                                "Make payment",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            ),
-                          )).marginOnly(top: 20),
-                      // Material(
-                      //     elevation: 10,
-                      //     color: Colors.transparent,
-                      //     borderRadius: BorderRadius.circular(60),
-                      //     child: InkWell(
-                      //       onTap: () async{
-                      //         await DatabaseHelper().playTapAudio();
-                      //
-                      //       },
-                      //       child: Container(
-                      //         alignment: Alignment.center,
-                      //         width: 130,
-                      //         height: 30,
-                      //         decoration: BoxDecoration(
-                      //           borderRadius: BorderRadius.circular(60),
-                      //           border: Border.all(color: Colors.yellow),
-                      //           gradient: const LinearGradient(
-                      //             colors: [
-                      //               Color(0xff104e99),
-                      //               Color(0xff8dabc9)
-                      //             ],
-                      //             begin: Alignment.bottomCenter,
-                      //             end: Alignment.topCenter,
-                      //           ),
-                      //         ),
-                      //         child: const Text(
-                      //           "Create new account",
-                      //           style: TextStyle(
-                      //               color: Colors.white, fontSize: 12),
-                      //         ),
-                      //       ),
-                      //     )).marginOnly(top: 10),
-                    ],
-                  ).marginSymmetric(horizontal: 30).marginOnly(top: 40);
-                },)
-            ),
+                            )).marginOnly(top: 20),
+                        // Material(
+                        //     elevation: 10,
+                        //     color: Colors.transparent,
+                        //     borderRadius: BorderRadius.circular(60),
+                        //     child: InkWell(
+                        //       onTap: () async{
+                        //         await DatabaseHelper().playTapAudio();
+                        //
+                        //       },
+                        //       child: Container(
+                        //         alignment: Alignment.center,
+                        //         width: 130,
+                        //         height: 30,
+                        //         decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(60),
+                        //           border: Border.all(color: Colors.yellow),
+                        //           gradient: const LinearGradient(
+                        //             colors: [
+                        //               Color(0xff104e99),
+                        //               Color(0xff8dabc9)
+                        //             ],
+                        //             begin: Alignment.bottomCenter,
+                        //             end: Alignment.topCenter,
+                        //           ),
+                        //         ),
+                        //         child: const Text(
+                        //           "Create new account",
+                        //           style: TextStyle(
+                        //               color: Colors.white, fontSize: 12),
+                        //         ),
+                        //       ),
+                        //     )).marginOnly(top: 10),
+                      ],
+                    ).marginSymmetric(horizontal: 30).marginOnly(top: 40);
+                  },
+                )),
           ),
         ],
       ),
@@ -386,14 +415,16 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait> with SingleTick
 }
 
 class BuyPackageLandscape extends StatefulWidget {
-  final String price;
-  const BuyPackageLandscape(this.price,{super.key});
+  final price;
+  final String callingScreenName;
+  const BuyPackageLandscape(this.price, this.callingScreenName,{super.key});
 
   @override
   State<BuyPackageLandscape> createState() => _BuyPackageLandscapeState();
 }
 
-class _BuyPackageLandscapeState extends State<BuyPackageLandscape> with SingleTickerProviderStateMixin{
+class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -410,19 +441,21 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape> with SingleTi
         curve: Curves.easeInOut,
       ),
     )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _controller.reverse();
-      } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
-      }
-    });
+        if (status == AnimationStatus.completed) {
+          _controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _controller.forward();
+        }
+      });
     _controller.forward();
   }
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -453,17 +486,24 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape> with SingleTi
                         builder: (context, child) {
                           return Transform.rotate(
                             angle: _animation.value,
-                            child: Image.asset("assets/images/balloons.png",width: 200,height: 200,), // Replace with your balloon image
+                            child: Image.asset(
+                              "assets/images/balloons.png",
+                              width: 200,
+                              height: 200,
+                            ), // Replace with your balloon image
                           );
                         },
                       )),
                   Positioned(
                       right: 20,
                       bottom: 15,
-                      child: Image.asset("assets/images/homeCart.png",width: 100,height: 100,)),
+                      child: Image.asset(
+                        "assets/images/homeCart.png",
+                        width: 100,
+                        height: 100,
+                      )),
                 ],
               ),
-
             ),
           ),
           Container(
@@ -471,9 +511,9 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape> with SingleTi
             height: 280,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: AssetImage("assets/images/signupLandscapeContainer.png"),
-                )),
+              fit: BoxFit.fill,
+              image: AssetImage("assets/images/signupLandscapeContainer.png"),
+            )),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -485,255 +525,265 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape> with SingleTi
                           image: AssetImage(
                               "assets/images/LoginPortraitMonte.png"))),
                 ).marginOnly(right: 10),
-                GetBuilder<CardController>(builder: (controller) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.nameController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Name on card',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.cardNumberController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Card number',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ).marginOnly(top: 10),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            readOnly: true,
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                              DateTime? picked=await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2020),
-                                lastDate: DateTime(2025),
-                                builder: (BuildContext context, Widget? child) {
-                                  return Theme(
-                                    data: ThemeData.light().copyWith(
-                                      primaryColor: const Color(0xffD90F4E),
-                                      accentColor: const Color(0xffD90F4E),
-                                      colorScheme: const ColorScheme.light(primary: Colors.pink),
-                                      buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
-                                    ),
-                                    child: child!,
-                                  );
-                                },
-                              );
-                              if (picked != null) {
-                                final formattedDate = DateFormat('yyyy-MM').format(picked);
-                                controller.expDateController.text=formattedDate;
-                              }
-                            },
-                            controller: controller.expDateController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Exp (Month/Year)',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ).marginOnly(top: 10),
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(60),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          width: 120,
-                          height: 35,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.cvvController,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'CVV',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
-                          ),
-                        ),
-                      ).marginOnly(top: 10),
-
-                    ],
-                  );
-                },).marginOnly(right: 20),
-                GetBuilder<CardController>(builder: (controller) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Container(
-                      //   width: 30,
-                      //   height: 30,
-                      //   decoration: const BoxDecoration(
-                      //       image: DecorationImage(
-                      //           image: AssetImage("assets/images/lock.png"))),
-                      // ).marginOnly(top: 10),
-                      Material(
+                GetBuilder<CardController>(
+                  builder: (controller) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Material(
                           elevation: 10,
-                          color: Colors.transparent,
                           borderRadius: BorderRadius.circular(60),
-                          child: InkWell(
-                            onTap: () async{
-                              await DatabaseHelper().playTapAudio();
-                              if(controller.expDateController.text.isEmpty)
-                              {
-                                CustomSnackbar.show("All fields are required", Colors.white);
-                                return;
-                              }else{await DatabaseHelper().makePayment(widget.price);}
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              width: 150,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(60),
-                                border: Border.all(color: Colors.yellow),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xff104e99),
-                                    Color(0xff8dabc9)
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                              },
+                              controller: controller.nameController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'Name on card',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(60),
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                              },
+                              controller: controller.cardNumberController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'Card number',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ).marginOnly(top: 10),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(60),
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              readOnly: true,
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                                DateTime? picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2025),
+                                  builder:
+                                      (BuildContext context, Widget? child) {
+                                    return Theme(
+                                      data: ThemeData.light().copyWith(
+                                        primaryColor: const Color(0xffD90F4E),
+                                        accentColor: const Color(0xffD90F4E),
+                                        colorScheme: const ColorScheme.light(
+                                            primary: Colors.pink),
+                                        buttonTheme: const ButtonThemeData(
+                                            textTheme: ButtonTextTheme.primary),
+                                      ),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (picked != null) {
+                                  final formattedDate =
+                                      DateFormat('yyyy-MM').format(picked);
+                                  controller.expDateController.text =
+                                      formattedDate;
+                                }
+                              },
+                              controller: controller.expDateController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'Exp (Month/Year)',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ).marginOnly(top: 10),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(60),
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: 120,
+                            height: 35,
+                            child: TextFormField(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                              },
+                              controller: controller.cvvController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                              decoration: InputDecoration(
+                                hintText: 'CVV',
+                                filled: true,
+                                hintStyle: const TextStyle(
+                                    color: Colors.white, fontSize: 14),
+                                fillColor: const Color(0xffD90F4E),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.yellow, width: 2.0),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 3.5, top: 2.5, bottom: 2.5),
+                              ),
+                            ),
+                          ),
+                        ).marginOnly(top: 10),
+                      ],
+                    );
+                  },
+                ).marginOnly(right: 20),
+                GetBuilder<CardController>(
+                  builder: (controller) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Container(
+                        //   width: 30,
+                        //   height: 30,
+                        //   decoration: const BoxDecoration(
+                        //       image: DecorationImage(
+                        //           image: AssetImage("assets/images/lock.png"))),
+                        // ).marginOnly(top: 10),
+                        Material(
+                            elevation: 10,
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(60),
+                            child: InkWell(
+                              onTap: () async {
+                                await DatabaseHelper().playTapAudio();
+                                if (controller.expDateController.text.isEmpty) {
+                                  CustomSnackbar.show(
+                                      "All fields are required", Colors.white);
+                                  return;
+                                } else {
+                                  await DatabaseHelper()
+                                      .makePayment(widget.price);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 150,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
+                                  border: Border.all(color: Colors.yellow),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xff104e99),
+                                      Color(0xff8dabc9)
+                                    ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Make payment",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
                                 ),
                               ),
-                              child: const Text(
-                                "Make payment",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              ),
-                            ),
-                          )).marginOnly(top: 20),
-                    ],
-                  );
-                },)
-
+                            )).marginOnly(top: 20),
+                      ],
+                    );
+                  },
+                )
               ],
             ),
           ).marginOnly(left: 35)
@@ -742,5 +792,3 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape> with SingleTi
     );
   }
 }
-
-

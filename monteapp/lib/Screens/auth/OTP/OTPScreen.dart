@@ -179,7 +179,6 @@ class _OTPPortraitState extends State<OTPPortrait>
                                   onTap: () async {
                                     await DatabaseHelper().playTapAudio();
                                     if(controller.otp.text.isNotEmpty){
-                                      await DatabaseHelper().playTapAudio();
                                       await DatabaseHelper().loginVerifyOTP(context);
                                     }else{
                                       CustomSnackbar.show("OTP field should not be empty", kRed);

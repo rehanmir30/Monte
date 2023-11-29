@@ -5,12 +5,20 @@ import 'package:get/get.dart';
 import 'package:monteapp/Screens/auth/Login/LoginScreen.dart';
 import 'package:video_player/video_player.dart';
 
+import 'Constants/SharedPref/shared_pref_services.dart';
 import 'Controllers/InitControllers/InitController.dart';
+import 'Controllers/UserController.dart';
+import 'Database/databasehelper.dart';
+import 'Models/UserModel.dart';
+import 'Screens/home/Home.dart';
 
 void main() async {
   await WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
   disableScreenshotsAndScreenRecording();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
 }
 void disableScreenshotsAndScreenRecording() async {
   await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
@@ -47,69 +55,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class SplashScreenPortrait extends StatefulWidget {
-  const SplashScreenPortrait({super.key});
-
-  @override
-  State<SplashScreenPortrait> createState() => _SplashScreenPortraitState();
-}
-
-class _SplashScreenPortraitState extends State<SplashScreenPortrait> {
-  bool _isVisible = false;
-
-  @override
-  void initState() {
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      setState(() {
-        _isVisible = true;
-      });
-    });
-
-    Future.delayed(const Duration(milliseconds: 4000), () async {
-      Get.offAll(const LoginScreen(), transition: Transition.downToUp);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage("assets/images/splashBgPortrait.jpg"))),
-        child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Where fun meets learning!",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.red, fontSize: 36),
-              ).marginSymmetric(horizontal: 20),
-              AnimatedContainer(
-                width: _isVisible ? 0 : 200,
-                height: _isVisible ? 0 : 200,
-                curve: Curves.bounceIn,
-                duration: const Duration(seconds: 2),
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/splashKidPortrait.png"),
-                  ),
-                ),
-              ).marginOnly(top: 40)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class SplashScreenLandscape extends StatefulWidget {
   const SplashScreenLandscape({super.key});
 
@@ -123,6 +68,11 @@ bool skipVisibility=false;
   @override
   void initState() {
     super.initState();
+    // Set the preferred orientation to landscape when this screen is created
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     Future.delayed(Duration(seconds: 4),(){
       setState(() {
         skipVisibility=true;
@@ -135,26 +85,24 @@ bool skipVisibility=false;
           _controller!.addListener(() async {
             if (_controller!.value.position >= _controller!.value.duration) {
               // Video has finished playing
-              // UserModel? _user=await SharedPref.getUser();
-              // if(_user==null){
-              //   Get.offAll(const LoginScreen(), transition: Transition.downToUp);
-              // }else{
-              //   Get.find<UserController>().setUser(_user);
-              //   await DatabaseHelper().getMainCategories();
-              //   Get.offAll(const Home(), transition: Transition.circularReveal);
-              // }
-              Get.offAll(const LoginScreen(), transition: Transition.downToUp);
-
+              UserModel? _user=await SharedPref.getUser();
+              if(_user==null){
+                SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+                Get.offAll(const LoginScreen(), transition: Transition.downToUp);
+              }else{
+                Get.find<UserController>().setUser(_user);
+                await DatabaseHelper().getMainCategories();
+                // _controller?.dispose();
+                SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+                Get.offAll(const Home(), transition: Transition.circularReveal);
+              }
+              // Get.offAll(const LoginScreen(), transition: Transition.downToUp);
             }
           });
         });
       });
 
-    // Set the preferred orientation to landscape when this screen is created
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+
   }
 
   @override
@@ -169,7 +117,6 @@ bool skipVisibility=false;
     return Scaffold(
       body: Stack(
         children: [
-
           Column(
             children: <Widget>[
               Expanded(
@@ -186,15 +133,18 @@ bool skipVisibility=false;
                 right: 20,
                 child: TextButton(
                   onPressed: () async {
-                    // UserModel? _user=await SharedPref.getUser();
-                    // if(_user==null){
-                    //   Get.offAll(const LoginScreen(), transition: Transition.downToUp);
-                    // }else{
-                    //   Get.find<UserController>().setUser(_user);
-                    //   await DatabaseHelper().getMainCategories();
-                    //   Get.offAll(const Home(), transition: Transition.circularReveal);
-                    // }
-                    Get.offAll(const LoginScreen(), transition: Transition.downToUp);
+                    UserModel? _user=await SharedPref.getUser();
+                    if(_user==null){
+                      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+                      Get.offAll(const LoginScreen(), transition: Transition.downToUp);
+                    }else{
+                      SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+                      Get.find<UserController>().setUser(_user);
+                      await DatabaseHelper().getMainCategories();
+                      _controller?.dispose();
+                      Get.offAll(const Home(), transition: Transition.circularReveal);
+                    }
+                    // Get.offAll(const LoginScreen(), transition: Transition.downToUp);
                   },
                   child: const Text(
                     "Skip",

@@ -3,11 +3,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
 import 'package:monteapp/Controllers/UserController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Models/MainCategoryModel.dart';
 import 'package:monteapp/Models/SubCategoryModel.dart';
+import 'package:monteapp/Screens/shop/CartScreen.dart';
 import 'package:monteapp/Screens/shop/ShopScreen.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
@@ -35,6 +37,14 @@ class _HomeState extends State<Home> {
       },
     );
   }
+
+  @override
+  void initState() {
+    getCart();
+  }
+  getCart()async{
+    await DatabaseHelper().getCart();
+  }
 }
 
 class HomePortrait extends StatefulWidget {
@@ -48,6 +58,7 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
 
   late AnimationController _controller;
   late Animation<double> _animation;
+  late Animation<double> _animation2;
   List<String> menuOptions=['Games','Settings','Logout'];
 
   @override
@@ -58,14 +69,25 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
       vsync: this,
     )..repeat(reverse: true);
 
+
     _animation = Tween<double>(begin: 0, end: 10).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.bounceOut,
       ),
     );
+    _animation2 = Tween<double>(begin: 0, end: 10).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOutBack,
+      ),
+    );
   }
-
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,6 +174,50 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
                 },
 
               )),
+          Positioned(
+              right: 10,
+              child:AnimatedBuilder(
+              animation: _animation2,
+              builder: (context,child){
+                return Transform.translate(
+                  offset: Offset(0,_animation2.value),
+                  child: InkWell(
+                    onTap: (){
+                      Get.to(const CartScreen(),transition: Transition.zoom);
+                    },
+                    child: Container(
+                        width: 100,
+                        height: 100,
+                        child: Stack(
+                            children: [
+                              Image.asset("assets/images/cartIcon.png"),
+                              Positioned(
+                                right: 20,
+                                top: 10,
+                                child: GetBuilder<CartController>(builder: (controller2) {
+                                  return  Visibility(
+                                    visible: controller2.cartModel==null?false:true,
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      decoration: BoxDecoration(
+                                          color: kRed,
+                                          shape: BoxShape.circle
+                                      ),
+                                    ),
+                                  );
+                                },)
+                               ,
+                              )
+                            ],
+                        )),
+                  ),
+                );
+
+    }
+              )
+
+              )
         ],
       ),
     );
@@ -280,6 +346,8 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
 
   late AnimationController _controller;
   late Animation<double> _animation;
+
+  late Animation<double> _animation2;
   List<String> menuOptions=['Games','Settings','Logout'];
   @override
   void initState() {
@@ -293,6 +361,12 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
       CurvedAnimation(
         parent: _controller,
         curve: Curves.bounceOut,
+      ),
+    );
+    _animation2 = Tween<double>(begin: 0, end: 10).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOutBack,
       ),
     );
   }
@@ -359,6 +433,50 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
     ),
     );
     })),
+          Positioned(
+              right: 10,
+              child:AnimatedBuilder(
+                  animation: _animation2,
+                  builder: (context,child){
+                    return Transform.translate(
+                      offset: Offset(0,_animation2.value),
+                      child: InkWell(
+                        onTap: (){
+                          Get.to(const CartScreen(),transition: Transition.zoom);
+                        },
+                        child: Container(
+                            width: 100,
+                            height: 100,
+                            child: Stack(
+                              children: [
+                                Image.asset("assets/images/cartIcon.png"),
+                                Positioned(
+                                  right: 20,
+                                  top: 10,
+                                  child: GetBuilder<CartController>(builder: (controller2) {
+                                    return  Visibility(
+                                      visible: controller2.cartModel==null?false:true,
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                            color: kRed,
+                                            shape: BoxShape.circle
+                                        ),
+                                      ),
+                                    );
+                                  },)
+                                  ,
+                                )
+                              ],
+                            )),
+                      ),
+                    );
+
+                  }
+              )
+
+          )
         ],
       ),
     );
