@@ -370,6 +370,11 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
       ),
     );
   }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

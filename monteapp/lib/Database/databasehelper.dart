@@ -11,6 +11,7 @@ import 'package:monteapp/Controllers/CardController.dart';
 import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
+import 'package:monteapp/Controllers/PackageController.dart';
 import 'package:monteapp/Controllers/ShopController.dart';
 import 'package:monteapp/Controllers/SignupController.dart';
 import 'package:monteapp/Controllers/UserController.dart';
@@ -31,6 +32,7 @@ import 'package:monteapp/Widgets/CustomSnackbar.dart';
 import '../Constants/ApiConstants.dart';
 import '../Models/UserModel.dart';
 import '../Screens/auth/OTP/OTPScreen.dart';
+import '../Screens/package/PackageScreen.dart';
 
 class DatabaseHelper {
   //play tap audio
@@ -80,15 +82,10 @@ class DatabaseHelper {
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
       UserModel user = UserModel.fromMap(responseJson['data']);
-      // String token = responseJson['token'];
-      // user.accessToken = token;
+      LoginController loginController = Get.find<LoginController>();
+      loginController.phone!=signupController.phone;
       userController.setUser(user);
-      Get.offAll(const LoginScreen());
-      // if(user.approved=="0"){
-      //   // Get.offAll(const BuyPackage(),transition: Transition.circularReveal);
-      // }else{
-      //   Get.offAll(const Home(),transition: Transition.circularReveal);
-      // }
+      Get.to(const OTPScreen(), transition: Transition.circularReveal);
       CustomSnackbar.show(responseJson['message'], kRed);
       return;
     } else {
@@ -149,7 +146,6 @@ class DatabaseHelper {
         CustomSnackbar.show(responseJson['message'], kRed);
         await getPackage(
             user.detail?.levelId ?? "0", user.accessToken, context);
-        // Get.offAll(const BuyPackage(),transition: Transition.circularReveal);
       } else {
         CustomSnackbar.show(responseJson['message'], kRed);
         await getMainCategories();
@@ -177,94 +173,98 @@ class DatabaseHelper {
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
       print("Bearer: ${accessToken}");
-      PackageModel package = PackageModel.fromMap(responseJson['data']);
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: Container(
-              // width: MediaQuery.of(context).size.width*0.7,
-              // height: 350,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                fit: BoxFit.scaleDown,
-                image: AssetImage("assets/images/packageContainerPortrait.png"),
-              )),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    "assets/images/balloons.png",
-                    width: 100,
-                    height: 100,
-                  ),
-                  Container(
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage("assets/images/packageNameBg.png"),
-                    )),
-                    child: Text(
-                      package.name ?? "",
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
-                    ).paddingSymmetric(horizontal: 20, vertical: 12),
-                  ),
-                  Text(
-                    "- ${package.description}",
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ).marginOnly(top: 12, left: 20, right: 20),
-                  Material(
-                      elevation: 10,
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(60),
-                      child: InkWell(
-                        onTap: () async {
-                          Get.to(BuyPackage(package.price ?? 0, "BuyPackage"),
-                              transition: Transition.upToDown);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: 100,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(60),
-                            border: Border.all(color: Colors.yellow),
-                            gradient: const LinearGradient(
-                              colors: [Color(0xff104e99), Color(0xff8dabc9)],
-                              // Define your gradient colors
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                            ),
-                          ),
-                          child: const Text(
-                            "Buy Now",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                        ),
-                      )).marginOnly(top: 20),
-                  TextButton(
-                      onPressed: () {
-                        // Get.to(const Home(),transition: Transition.upToDown);
-                      },
-                      child: const Text(
-                        "Try free version",
-                        style: TextStyle(
-                          color: kRed,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ))
-                ],
-              ).marginSymmetric(vertical: 20),
-            ),
-          );
-        },
-      );
+      PackageModel package = PackageModel.fromMap(responseJson);
+      print("Bearer: ${package.data?.package?.name}");
+      Get.find<PackageController>().setPackageModel(package);
+      Get.to(PackageScreen(),transition: Transition.downToUp);
+
+      // showDialog(
+      //   context: context,
+      //   barrierDismissible: false,
+      //   builder: (BuildContext context) {
+      //     return Dialog(
+      //       backgroundColor: Colors.transparent,
+      //       shape: RoundedRectangleBorder(
+      //         borderRadius: BorderRadius.circular(20.0),
+      //       ),
+      //       child: Container(
+      //         // width: MediaQuery.of(context).size.width*0.7,
+      //         // height: 350,
+      //         decoration: const BoxDecoration(
+      //             image: DecorationImage(
+      //           fit: BoxFit.scaleDown,
+      //           image: AssetImage("assets/images/packageContainerPortrait.png"),
+      //         )),
+      //         child: Column(
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: [
+      //             Image.asset(
+      //               "assets/images/balloons.png",
+      //               width: 100,
+      //               height: 100,
+      //             ),
+      //             Container(
+      //               decoration: const BoxDecoration(
+      //                   image: DecorationImage(
+      //                 fit: BoxFit.fill,
+      //                 image: AssetImage("assets/images/packageNameBg.png"),
+      //               )),
+      //               child: Text(
+      //                 package.name ?? "",
+      //                 style: const TextStyle(color: Colors.white, fontSize: 18),
+      //               ).paddingSymmetric(horizontal: 20, vertical: 12),
+      //             ),
+      //             Text(
+      //               "- ${package.description}",
+      //               style: const TextStyle(color: Colors.white, fontSize: 18),
+      //               textAlign: TextAlign.center,
+      //             ).marginOnly(top: 12, left: 20, right: 20),
+      //             Material(
+      //                 elevation: 10,
+      //                 color: Colors.transparent,
+      //                 borderRadius: BorderRadius.circular(60),
+      //                 child: InkWell(
+      //                   onTap: () async {
+      //                     Get.to(BuyPackage(package.price ?? 0, "BuyPackage"),
+      //                         transition: Transition.upToDown);
+      //                   },
+      //                   child: Container(
+      //                     alignment: Alignment.center,
+      //                     width: 100,
+      //                     height: 30,
+      //                     decoration: BoxDecoration(
+      //                       borderRadius: BorderRadius.circular(60),
+      //                       border: Border.all(color: Colors.yellow),
+      //                       gradient: const LinearGradient(
+      //                         colors: [Color(0xff104e99), Color(0xff8dabc9)],
+      //                         // Define your gradient colors
+      //                         begin: Alignment.bottomCenter,
+      //                         end: Alignment.topCenter,
+      //                       ),
+      //                     ),
+      //                     child: const Text(
+      //                       "Buy Now",
+      //                       style: TextStyle(color: Colors.white, fontSize: 12),
+      //                     ),
+      //                   ),
+      //                 )).marginOnly(top: 20),
+      //             TextButton(
+      //                 onPressed: () {
+      //                   // Get.to(const Home(),transition: Transition.upToDown);
+      //                 },
+      //                 child: const Text(
+      //                   "Try free version",
+      //                   style: TextStyle(
+      //                     color: kRed,
+      //                     decoration: TextDecoration.underline,
+      //                   ),
+      //                 ))
+      //           ],
+      //         ).marginSymmetric(vertical: 20),
+      //       ),
+      //     );
+      //   },
+      // );
     } else {
       print("Api error: ${responseJson['message']}");
     }

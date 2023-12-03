@@ -109,7 +109,7 @@ class _OTPPortraitState extends State<OTPPortrait>
                 children: [
                   Container(
                     width: 215,
-                    height: 400,
+                    height: MediaQuery.of(context).size.height*0.6,
                     decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage("assets/images/blankContainer.png"),
@@ -134,10 +134,11 @@ class _OTPPortraitState extends State<OTPPortrait>
                               borderRadius: BorderRadius.circular(60),
                               color: Colors.transparent,
                               child: SizedBox(
-                                width: 110,
-                                height: 25,
+                                width: 150,
+                                height: 40,
                                 child: TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: false, signed: true),
                                   textAlign: TextAlign.center,
                                   controller: controller.otp,
                                   style: const TextStyle(
@@ -186,8 +187,8 @@ class _OTPPortraitState extends State<OTPPortrait>
                                   },
                                   child: Container(
                                     alignment: Alignment.center,
-                                    width: 70,
-                                    height: 20,
+                                    width: 120,
+                                    height: 40,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(60),
                                       border: Border.all(color: Colors.yellow),
@@ -207,7 +208,7 @@ class _OTPPortraitState extends State<OTPPortrait>
                                           color: Colors.white, fontSize: 12),
                                     ),
                                   ),
-                                )).marginOnly(top: 10),
+                                )).marginOnly(top: 12),
                             Visibility(
                               visible: controller.isButtonDisabled,
                               child: Text(controller.formattedTimer()),
@@ -231,7 +232,7 @@ class _OTPPortraitState extends State<OTPPortrait>
                                   child: Container(
                                     alignment: Alignment.center,
                                     width: 100,
-                                    height: 20,
+                                    height: 40,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(60),
                                       border: Border.all(color: Colors.yellow),
@@ -258,11 +259,10 @@ class _OTPPortraitState extends State<OTPPortrait>
                     ),
                   ),
                   Positioned(
-                      bottom: 10,
+                      bottom: 30,
                       child: Image.asset("assets/images/monte.png",width: 100,height: 100,))
                 ],
               )),
-
         ],
       ),
     );

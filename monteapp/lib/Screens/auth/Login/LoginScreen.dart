@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Screens/auth/OTP/OTPScreen.dart';
+import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../Signup/SignUpScreen.dart';
 
@@ -65,6 +67,7 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,14 +121,16 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                         borderRadius: BorderRadius.circular(60),
                         color: Colors.transparent,
                         child: SizedBox(
-                          width: 120,
-                          height: 35,
+                          width: 150,
+                          height: 40,
                           child: TextFormField(
                             onTap: () async {
                               await DatabaseHelper().playTapAudio();
                             },
                             controller: controller.phone,
                             textAlign: TextAlign.center,
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: false, signed: true),
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                             decoration: InputDecoration(
@@ -163,14 +168,17 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                             onTap: () async{
                               await DatabaseHelper().playTapAudio();
                               Get.focusScope?.unfocus();
-                              await DatabaseHelper().login();
-                              // Get.to(const OTPScreen(),
-                              //     transition: Transition.circularReveal);
+                              if(controller.phone.text.isEmpty){
+                                CustomSnackbar.show("Phone field is required", kRed);
+                              }else{
+                                await DatabaseHelper().login();
+                              }
+
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              width: 80,
-                              height: 30,
+                              width: 120,
+                              height: 40,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 border: Border.all(color: Colors.yellow),
@@ -210,7 +218,7 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                             child: Container(
                               alignment: Alignment.center,
                               width: 130,
-                              height: 30,
+                              height: 40,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 border: Border.all(color: Colors.yellow),
@@ -322,7 +330,6 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
 
             ),
           ),
-
           Container(
             width: 440,
             height: 450,
@@ -351,13 +358,14 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
                               },
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: false, signed: true),
                               textAlign: TextAlign.center,
                               controller: controller.phone,
                               style: const TextStyle(
@@ -397,14 +405,17 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                               onTap: () async{
                                 await DatabaseHelper().playTapAudio();
                                 Get.focusScope?.unfocus();
-                                await DatabaseHelper().login();
-                                // Get.to(const OTPScreen(),
-                                //     transition: Transition.circularReveal);
+                                if(controller.phone.text.isEmpty){
+                                  CustomSnackbar.show("Phone field is required", kRed);
+                                }else{
+                                  await DatabaseHelper().login();
+                                }
+
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                width: 80,
-                                height: 30,
+                                width: 120,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(60),
                                   border: Border.all(color: Colors.yellow),
@@ -450,8 +461,8 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                           },
                           child: Container(
                             alignment: Alignment.center,
-                            width: 130,
-                            height: 30,
+                            width: 150,
+                            height: 40,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(60),
                               border: Border.all(color: Colors.yellow),

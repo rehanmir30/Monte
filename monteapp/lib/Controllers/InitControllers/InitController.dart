@@ -8,6 +8,8 @@ import 'package:monteapp/Controllers/ShopController.dart';
 import 'package:monteapp/Controllers/SignupController.dart';
 import 'package:monteapp/Controllers/UserController.dart';
 
+import '../PackageController.dart';
+
 class InitController with Bindings{
   @override
   void dependencies() {
@@ -19,6 +21,7 @@ class InitController with Bindings{
     Get.put(MainCategoryController(),permanent: true);
     Get.put(ShopController(),permanent: true);
     Get.put(CartController(),permanent: true);
+    Get.put(PackageController(),permanent: true);
   }
 
 

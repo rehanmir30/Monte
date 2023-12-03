@@ -93,7 +93,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                     image: AssetImage("assets/images/loginBgPortrait.jpg"))),
           ),
           Positioned(
-              bottom: 50,
+              bottom: 70,
+              right: -50,
               child: AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {
@@ -101,14 +102,15 @@ class _SignupPortraitState extends State<SignupPortrait>
                     angle: _animation.value,
                     child: Image.asset(
                       "assets/images/balloons.png",
-                      width: 250,
-                      height: 250,
+                      width: 200,
+                      height: 200,
                     ), // Replace with your balloon image
                   );
                 },
               )),
           Positioned(
               bottom: 10,
+              right: 0,
               child: Image.asset(
                 "assets/images/homeCart.png",
                 width: 100,
@@ -117,8 +119,8 @@ class _SignupPortraitState extends State<SignupPortrait>
           Positioned(
             top: 35,
             child: Container(
-              width: 250,
-              height: 480,
+              width: MediaQuery.of(context).size.width*0.9,
+              height: MediaQuery.of(context).size.height*0.8,
               decoration: const BoxDecoration(
                   image: DecorationImage(
                 fit: BoxFit.fill,
@@ -129,8 +131,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                   return Column(
                     children: [
                       Container(
-                        width: 115,
-                        height: 20,
+                        width: 150,
+                        height: 40,
                         decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image:
@@ -141,8 +143,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                         borderRadius: BorderRadius.circular(60),
                         color: Colors.transparent,
                         child: SizedBox(
-                          width: 120,
-                          height: 25,
+                          width: 150,
+                          height: 40,
                           child: TextFormField(
                             controller: controller.name,
                             textAlign: TextAlign.center,
@@ -187,8 +189,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                         borderRadius: BorderRadius.circular(60),
                         color: Colors.transparent,
                         child: SizedBox(
-                          width: 120,
-                          height: 25,
+                          width: 150,
+                          height: 40,
                           child: TextFormField(
                             controller: controller.email,
                             textAlign: TextAlign.center,
@@ -233,8 +235,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                         elevation: 10,
                         color: Colors.transparent,
                         child: SizedBox(
-                          width: 120,
-                          height: 25,
+                          width: 150,
+                          height: 40,
                           child: TextFormField(
                             controller: controller.age,
                             onTap: () async {
@@ -304,8 +306,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                         elevation: 10,
                         color: Colors.transparent,
                         child: SizedBox(
-                          width: 120,
-                          height: 25,
+                          width: 150,
+                          height: 40,
                           child: TextFormField(
                             controller: controller.phone,
                             onTap: () async {
@@ -314,7 +316,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                             textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: false, signed: true),
                             decoration: InputDecoration(
                               hintText: 'Phone Number',
                               filled: true,
@@ -351,8 +354,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                         elevation: 10,
                         color: Colors.transparent,
                         child: SizedBox(
-                          width: 120,
-                          height: 25,
+                          width: 150,
+                          height: 40,
                           child: TextFormField(
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
@@ -429,8 +432,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              width: 70,
-                              height: 30,
+                              width: 150,
+                              height: 40,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 border: Border.all(color: Colors.yellow),
@@ -452,8 +455,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                             ),
                           )).marginOnly(top: 20),
                       Container(
-                        width: 30,
-                        height: 30,
+                        width: 50,
+                        height: 50,
                         decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage("assets/images/lock.png"))),
@@ -469,8 +472,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              width: MediaQuery.of(context).size.width * 0.5,
-                              height: 30,
+                              width: 170,
+                              height: 40,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(60),
                                 border: Border.all(color: Colors.yellow),
@@ -595,8 +598,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
             ),
           ),
           Container(
-            width: 500,
-            height: 280,
+            width: MediaQuery.of(context).size.width*0.75,
+            height: MediaQuery.of(context).size.height*0.85,
             decoration: const BoxDecoration(
                 image: DecorationImage(
               fit: BoxFit.fill,
@@ -611,8 +614,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          width: 115,
-                          height: 20,
+                          width: 150,
+                          height: 40,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
                                   image: AssetImage(
@@ -626,8 +629,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                               borderRadius: BorderRadius.circular(60),
                               color: Colors.transparent,
                               child: SizedBox(
-                                width: 100,
-                                height: 25,
+                                width: 150,
+                                height: 40,
                                 child: TextFormField(
                                   controller: controller.name,
                                   textAlign: TextAlign.center,
@@ -675,8 +678,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                               elevation: 10,
                               color: Colors.transparent,
                               child: SizedBox(
-                                width: 100,
-                                height: 25,
+                                width: 150,
+                                height: 40,
                                 child: TextFormField(
                                   controller: controller.age,
                                   onTap: () async {
@@ -757,8 +760,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                               borderRadius: BorderRadius.circular(60),
                               color: Colors.transparent,
                               child: SizedBox(
-                                width: 100,
-                                height: 25,
+                                width: 150,
+                                height: 40,
                                 child: TextFormField(
                                   controller: controller.email,
                                   textAlign: TextAlign.center,
@@ -806,8 +809,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                               elevation: 10,
                               color: Colors.transparent,
                               child: SizedBox(
-                                width: 100,
-                                height: 25,
+                                width: 150,
+                                height: 40,
                                 child: TextFormField(
                                   controller: controller.phone,
                                   onTap: () async {
@@ -816,7 +819,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 14),
                                   textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: false, signed: true),
                                   decoration: InputDecoration(
                                     hintText: 'Phone Number',
                                     filled: true,
@@ -855,8 +859,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                           elevation: 10,
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 25,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 14),
@@ -934,8 +938,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                width: 70,
-                                height: 30,
+                                width: 150,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(60),
                                   border: Border.all(color: Colors.yellow),
@@ -964,8 +968,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 30,
-                      height: 30,
+                      width: 50,
+                      height: 50,
                       decoration: const BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage("assets/images/lock.png"))),
@@ -980,8 +984,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                           },
                           child: Container(
                             alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width * 0.22,
-                            height: 30,
+                            width: MediaQuery.of(context).size.width * 0.23,
+                            height: 40,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(60),
                               border: Border.all(color: Colors.yellow),
@@ -1002,7 +1006,7 @@ class _SignupLandscapeState extends State<SignupLandscape>
                   ],
                 )
               ],
-            ),
+            ).marginSymmetric(horizontal: 12),
           ).marginOnly(left: 35)
         ],
       ),
