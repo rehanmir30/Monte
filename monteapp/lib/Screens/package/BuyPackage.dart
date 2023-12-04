@@ -111,10 +111,10 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
             top: 55,
             child: Container(
                 width: 265,
-                height: 450,
+                height: MediaQuery.of(context).size.height*0.65,
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                  fit: BoxFit.fitHeight,
+                  fit: BoxFit.fill,
                   image: AssetImage("assets/images/loginPotraitContainer.png"),
                 )),
                 child: GetBuilder<CardController>(
@@ -134,8 +134,8 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
@@ -176,8 +176,8 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
@@ -218,8 +218,8 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               readOnly: true,
                               onTap: () async {
@@ -287,8 +287,8 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
@@ -350,8 +350,8 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                width: 150,
-                                height: 30,
+                                width: 160,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(60),
                                   border: Border.all(color: Colors.yellow),
@@ -535,8 +535,8 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
@@ -577,8 +577,8 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
@@ -619,8 +619,8 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               readOnly: true,
                               onTap: () async {
@@ -688,8 +688,8 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
                           child: SizedBox(
-                            width: 120,
-                            height: 35,
+                            width: 150,
+                            height: 40,
                             child: TextFormField(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
@@ -728,19 +728,12 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                       ],
                     );
                   },
-                ).marginOnly(right: 20),
+                ),
                 GetBuilder<CardController>(
                   builder: (controller) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Container(
-                        //   width: 30,
-                        //   height: 30,
-                        //   decoration: const BoxDecoration(
-                        //       image: DecorationImage(
-                        //           image: AssetImage("assets/images/lock.png"))),
-                        // ).marginOnly(top: 10),
                         Material(
                             elevation: 10,
                             color: Colors.transparent,
@@ -748,9 +741,12 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                             child: InkWell(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
-                                if (controller.expDateController.text.isEmpty) {
+                                if (controller.nameController.text.isEmpty ||
+                                    controller.cardNumberController.text.isEmpty ||
+                                    controller.cvvController.text.isEmpty||
+                                    controller.expDateController.text.isEmpty) {
                                   CustomSnackbar.show(
-                                      "All fields are required", Colors.white);
+                                      "All fields are required", kRed);
                                   return;
                                 } else {
                                   await DatabaseHelper()
@@ -760,7 +756,7 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                               child: Container(
                                 alignment: Alignment.center,
                                 width: 150,
-                                height: 30,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(60),
                                   border: Border.all(color: Colors.yellow),

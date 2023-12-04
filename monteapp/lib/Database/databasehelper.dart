@@ -176,6 +176,7 @@ class DatabaseHelper {
       PackageModel package = PackageModel.fromMap(responseJson);
       print("Bearer: ${package.data?.package?.name}");
       Get.find<PackageController>().setPackageModel(package);
+      Get.find<PackageController>().setPrice(true);
       Get.to(PackageScreen(),transition: Transition.downToUp);
 
       // showDialog(
@@ -274,6 +275,7 @@ class DatabaseHelper {
   Future<void> makePayment(var price) async {
     UserController userController = Get.find<UserController>();
     CardController cardController = Get.find<CardController>();
+    PackageController packageController = Get.find<PackageController>();
     List<String> parts = cardController.expDateController.text.split("-");
     Map<String, String> headers = {
       "Accept": "application/json",
@@ -286,7 +288,8 @@ class DatabaseHelper {
       "year": parts[0],
       "cvv": cardController.cvvController.text,
       "price": price,
-      "user_id": "${userController.userModel.id}"
+      "user_id": "${userController.userModel.id}",
+      "bundleId": "${packageController.packageModel.data!.bundle!.id}",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.makePayment);
     var response = await http.post(url, headers: headers, body: params);
@@ -368,7 +371,7 @@ class DatabaseHelper {
       "Accept": "application/json",
       "Authorization": "Bearer ${userController.userModel.accessToken}"
     };
-
+print("Bearer: ${userController.userModel.accessToken}");
     var url = Uri.parse(ApiConstants.baseUrl +
         ApiConstants.getVideos +
         (subCategoryModel.id.toString()));

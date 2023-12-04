@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Screens/Videos/VideoPlayer.dart';
 
@@ -86,7 +87,7 @@ class _VideoScreenPortraitState extends State<VideoScreenPortrait>
           ),
           GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, childAspectRatio: 0.8),
+                crossAxisCount: 2, childAspectRatio: 0.7),
             itemCount: widget._videoList.length,
             itemBuilder: (context, index) {
               double yOffset = index.isEven ? -20.0 : 20.0;
@@ -119,36 +120,42 @@ class _VideoScreenPortraitState extends State<VideoScreenPortrait>
                         offset: Offset(0, yOffset),
                         child: Transform.rotate(
                             angle: _animation.value,
-                            child: Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.all(8.0),
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                          "assets/images/baloon${randomNumber}.png"))),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(width: 80,height: 80,
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 130,
+                                  width: 100,
+                                  alignment: Alignment.center,
+                                  margin: const EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: AssetImage(
+                                              "assets/images/baloon${randomNumber}.png"))),
+                                  child: Container(width: 80,height: 80,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: NetworkImage(widget._videoList[index].thumbnail!)
                                     )
                                   ),
                                   ),
-                                  Text(
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: kRed,
+                                    border: Border.all(color: kYellow),
+                                    borderRadius: BorderRadius.circular(10)
+                                  ),
+                                  child: Text(
                                     widget._videoList[index].title ?? "",
                                     style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white),
                                     textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
+                                  ).marginAll(10),
+                                ),
+                              ],
                             )).marginAll(10),
                       ),
                     );
@@ -254,28 +261,45 @@ class _VideoScreenLandscapeState extends State<VideoScreenLandscape>
                             offset: Offset(0, xOffset),
                             child: Transform.rotate(
                               angle: _animation.value,
-                              child: Container(
-                                width: 120,
-                                // Set the width of your items as needed
-                                margin: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(
-                                        "assets/images/baloon$randomNumber.png"),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    widget._videoList[index].title ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 130,
+                                    width: 100,
+                                    margin: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: AssetImage(
+                                            "assets/images/baloon$randomNumber.png"),
+                                      ),
                                     ),
-                                    textAlign: TextAlign.center,
+                                    child: Container(width: 80,height: 80,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage(widget._videoList[index].thumbnail!)
+                                        )
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Container(
+                                    width: 150,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                        color: kRed,
+                                        border: Border.all(color: kYellow),
+                                        borderRadius: BorderRadius.circular(10)
+                                    ),
+                                    child: Text(
+                                      widget._videoList[index].title ?? "",
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                      textAlign: TextAlign.center,
+                                    ).marginAll(10),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
