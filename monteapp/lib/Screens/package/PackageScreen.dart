@@ -4,6 +4,7 @@ import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/PackageController.dart';
 import 'package:monteapp/Models/PackageModel.dart';
 
+import 'AddressScreen.dart';
 import 'BuyPackage.dart';
 
 class PackageScreen extends StatefulWidget {
@@ -161,13 +162,17 @@ class _PackagePortraitState extends State<PackagePortrait> {
                         borderRadius: BorderRadius.circular(20),
                         child: InkWell(
                           onTap: () {
-                            Get.to(
-                                BuyPackage(
-                                    controller.packageModel.data!.package!
-                                            .price ??
-                                        0,
-                                    "BuyPackage"),
-                                transition: Transition.upToDown);
+                            Get.to(AddressScreen(controller.packageModel.data!.package!
+                                .price ??
+                                0,
+                                "BuyPackage"),transition: Transition.leftToRight);
+                            // Get.to(
+                            //     BuyPackage(
+                            //         controller.packageModel.data!.package!
+                            //                 .price ??
+                            //             0,
+                            //         "BuyPackage"),
+                            //     transition: Transition.upToDown);
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.6,
@@ -355,13 +360,17 @@ class _PackageLandscapeState extends State<PackageLandscape> {
                         borderRadius: BorderRadius.circular(20),
                         child: InkWell(
                           onTap: () {
-                            Get.to(
-                                BuyPackage(
-                                    controller.packageModel.data!.package!
-                                            .price ??
-                                        0,
-                                    "BuyPackage"),
-                                transition: Transition.upToDown);
+                            Get.to(AddressScreen(controller.packageModel.data!.package!
+                                .price ??
+                                0,
+                                "BuyPackage"),transition: Transition.leftToRight);
+                            // Get.to(
+                            //     BuyPackage(
+                            //         controller.packageModel.data!.package!
+                            //                 .price ??
+                            //             0,
+                            //         "BuyPackage"),
+                            //     transition: Transition.upToDown);
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.2,

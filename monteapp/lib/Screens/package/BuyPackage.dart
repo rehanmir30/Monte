@@ -345,7 +345,6 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                                   }else{
                                     await DatabaseHelper().placeOrder(widget.price);
                                   }
-
                                 }
                               },
                               child: Container(

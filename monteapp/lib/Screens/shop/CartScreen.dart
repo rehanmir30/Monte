@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Models/CartModel.dart';
+import 'package:monteapp/Screens/package/AddressScreen.dart';
 import 'package:monteapp/Screens/package/BuyPackage.dart';
 
 import '../../Database/databasehelper.dart';
@@ -132,7 +133,8 @@ class _CartScreenPortraitState extends State<CartScreenPortrait> {
                               bottom: 0,
                               child: InkWell(
                                 onTap:()async{
-                                  Get.to(BuyPackage(controller.cartModel?.totalPrice, "CartScreen"));
+                                  // Get.to(BuyPackage(controller.cartModel?.totalPrice, "CartScreen"));
+                                  Get.to(AddressScreen(controller.cartModel?.totalPrice, "CartScreen"));
                                 },
                                 child: Container(
                                   width: 150,

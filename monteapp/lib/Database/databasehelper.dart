@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:monteapp/Constants/SharedPref/shared_pref_services.dart';
 import 'package:monteapp/Constants/colors.dart';
+import 'package:monteapp/Controllers/AddressController.dart';
 import 'package:monteapp/Controllers/CardController.dart';
 import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
@@ -56,7 +57,12 @@ class DatabaseHelper {
         levelList.add(levelModel);
       }
       return levelList;
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      return levelList;
+    }else {
       CustomSnackbar.show("Failed to fetch levels", kRed);
       return levelList;
     }
@@ -88,7 +94,11 @@ class DatabaseHelper {
       Get.to(const OTPScreen(), transition: Transition.circularReveal);
       CustomSnackbar.show(responseJson['message'], kRed);
       return;
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }else {
       if (kDebugMode) {
         print(responseJson['message']);
       }
@@ -113,10 +123,12 @@ class DatabaseHelper {
       CustomSnackbar.show(responseJson['message'], kRed);
       Get.to(const OTPScreen(), transition: Transition.circularReveal);
       return;
-    } else {
+    }else if (response.statusCode == 401) {
+      CustomSnackbar.show(responseJson['message'], kRed);
+      return;
+    }else {
       CustomSnackbar.show(responseJson['message'], kRed);
       Get.to(SignupScreen(),transition: Transition.zoom);
-
       return;
     }
   }
@@ -152,7 +164,11 @@ class DatabaseHelper {
         Get.offAll(const Home(), transition: Transition.circularReveal);
       }
       return;
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }else {
       if (kDebugMode) {
         print(responseJson['message']);
       }
@@ -179,94 +195,11 @@ class DatabaseHelper {
       Get.find<PackageController>().setPrice(true);
       Get.to(PackageScreen(),transition: Transition.downToUp);
 
-      // showDialog(
-      //   context: context,
-      //   barrierDismissible: false,
-      //   builder: (BuildContext context) {
-      //     return Dialog(
-      //       backgroundColor: Colors.transparent,
-      //       shape: RoundedRectangleBorder(
-      //         borderRadius: BorderRadius.circular(20.0),
-      //       ),
-      //       child: Container(
-      //         // width: MediaQuery.of(context).size.width*0.7,
-      //         // height: 350,
-      //         decoration: const BoxDecoration(
-      //             image: DecorationImage(
-      //           fit: BoxFit.scaleDown,
-      //           image: AssetImage("assets/images/packageContainerPortrait.png"),
-      //         )),
-      //         child: Column(
-      //           mainAxisSize: MainAxisSize.min,
-      //           children: [
-      //             Image.asset(
-      //               "assets/images/balloons.png",
-      //               width: 100,
-      //               height: 100,
-      //             ),
-      //             Container(
-      //               decoration: const BoxDecoration(
-      //                   image: DecorationImage(
-      //                 fit: BoxFit.fill,
-      //                 image: AssetImage("assets/images/packageNameBg.png"),
-      //               )),
-      //               child: Text(
-      //                 package.name ?? "",
-      //                 style: const TextStyle(color: Colors.white, fontSize: 18),
-      //               ).paddingSymmetric(horizontal: 20, vertical: 12),
-      //             ),
-      //             Text(
-      //               "- ${package.description}",
-      //               style: const TextStyle(color: Colors.white, fontSize: 18),
-      //               textAlign: TextAlign.center,
-      //             ).marginOnly(top: 12, left: 20, right: 20),
-      //             Material(
-      //                 elevation: 10,
-      //                 color: Colors.transparent,
-      //                 borderRadius: BorderRadius.circular(60),
-      //                 child: InkWell(
-      //                   onTap: () async {
-      //                     Get.to(BuyPackage(package.price ?? 0, "BuyPackage"),
-      //                         transition: Transition.upToDown);
-      //                   },
-      //                   child: Container(
-      //                     alignment: Alignment.center,
-      //                     width: 100,
-      //                     height: 30,
-      //                     decoration: BoxDecoration(
-      //                       borderRadius: BorderRadius.circular(60),
-      //                       border: Border.all(color: Colors.yellow),
-      //                       gradient: const LinearGradient(
-      //                         colors: [Color(0xff104e99), Color(0xff8dabc9)],
-      //                         // Define your gradient colors
-      //                         begin: Alignment.bottomCenter,
-      //                         end: Alignment.topCenter,
-      //                       ),
-      //                     ),
-      //                     child: const Text(
-      //                       "Buy Now",
-      //                       style: TextStyle(color: Colors.white, fontSize: 12),
-      //                     ),
-      //                   ),
-      //                 )).marginOnly(top: 20),
-      //             TextButton(
-      //                 onPressed: () {
-      //                   // Get.to(const Home(),transition: Transition.upToDown);
-      //                 },
-      //                 child: const Text(
-      //                   "Try free version",
-      //                   style: TextStyle(
-      //                     color: kRed,
-      //                     decoration: TextDecoration.underline,
-      //                   ),
-      //                 ))
-      //           ],
-      //         ).marginSymmetric(vertical: 20),
-      //       ),
-      //     );
-      //   },
-      // );
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }else {
       print("Api error: ${responseJson['message']}");
     }
   }
@@ -275,6 +208,7 @@ class DatabaseHelper {
   Future<void> makePayment(var price) async {
     UserController userController = Get.find<UserController>();
     CardController cardController = Get.find<CardController>();
+    AddressController addressController = Get.find<AddressController>();
     PackageController packageController = Get.find<PackageController>();
     List<String> parts = cardController.expDateController.text.split("-");
     Map<String, String> headers = {
@@ -290,6 +224,11 @@ class DatabaseHelper {
       "price": price,
       "user_id": "${userController.userModel.id}",
       "bundleId": "${packageController.packageModel.data!.bundle!.id}",
+      "address": "${addressController.homeAddress}",
+      "city": "${addressController.city}",
+      "state": "${addressController.state}",
+      "country": "${addressController.country}",
+      "pincode": "${addressController.postalCode}",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.makePayment);
     var response = await http.post(url, headers: headers, body: params);
@@ -297,9 +236,12 @@ class DatabaseHelper {
     if (response.statusCode == 200) {
       CustomSnackbar.show(responseJson['message'], kRed);
       await getMainCategories();
-      // Get.to(const OTPScreen(),transition: Transition.circularReveal);
       return;
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }else {
       if (kDebugMode) {
         print(responseJson['message']);
       }
@@ -332,6 +274,10 @@ class DatabaseHelper {
       Get.offAll(const Home(), transition: Transition.circularReveal);
 
       return;
+    }else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
     } else {
       print("Get main Category error: ${responseJson['message']}");
     }
@@ -358,7 +304,12 @@ class DatabaseHelper {
         subCategoryList.add(subCategoryModel);
       }
       return subCategoryList;
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      return subCategoryList;
+    }else {
       return subCategoryList;
     }
   }
@@ -383,7 +334,12 @@ print("Bearer: ${userController.userModel.accessToken}");
         videoList.add(videoModel);
       }
       return videoList;
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      return videoList;
+    }else {
       return videoList;
     }
   }
@@ -414,7 +370,11 @@ print("Bearer: ${userController.userModel.accessToken}");
       } else {
         Get.find<ShopController>().setToyShopModel(shopModel);
       }
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }else {
       if (kDebugMode) {
         print("Shop API Error: ${response.body}");
       }
@@ -444,7 +404,11 @@ print("Bearer: ${userController.userModel.accessToken}");
       CartModel cartModel=CartModel.fromMap(responseJson['data']);
       Get.find<CartController>().setCartModel(cartModel);
       CustomSnackbar.show(responseJson['message'], kRed);
-    } else {
+    } else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }else {
       print("Add to cart error: " + response.body.toString());
     }
   }
@@ -464,9 +428,15 @@ print("Bearer: ${userController.userModel.accessToken}");
     if(response.statusCode==200){
       CartModel cartModel=CartModel.fromMap(responseJson['data']);
       Get.find<CartController>().setCartModel(cartModel);
-    }else{
+    }else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+    }
+    else{
       Get.find<CartController>().setCartModel(null);
       print("Error in get cart: "+response.body);
+      print(response.statusCode);
     }
   }
 
@@ -491,6 +461,10 @@ print("Bearer: ${userController.userModel.accessToken}");
       // Get.find<CartController>().setCartModel(cartModel);
       await getCart();
       CustomSnackbar.show(responseJson['message'], kRed);
+    }else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
     }
   }
 
@@ -498,6 +472,7 @@ print("Bearer: ${userController.userModel.accessToken}");
   Future<void> placeOrder(String price)async{
     UserController userController = Get.find<UserController>();
     CardController cardController = Get.find<CardController>();
+    AddressController addressController=Get.find<AddressController>();
 
     List<String> parts = cardController.expDateController.text.split("-");
     Map<String, String> headers = {
@@ -511,7 +486,12 @@ print("Bearer: ${userController.userModel.accessToken}");
       "year": parts[0],
       "cvv": cardController.cvvController.text,
       "price": price,
-      "userId": "${userController.userModel.id}"
+      "userId": "${userController.userModel.id}",
+      "address": "${addressController.homeAddress}",
+      "city": "${addressController.city}",
+      "state": "${addressController.state}",
+      "country": "${addressController.country}",
+      "pincode": "${addressController.postalCode}",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.orderPayment);
 
@@ -526,6 +506,10 @@ print("Bearer: ${userController.userModel.accessToken}");
 
 
       CustomSnackbar.show(responseJson['message'], kRed);
+    }else if(response.statusCode==401){
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
     }else{
       print("Order place API error: "+response.body);
       CustomSnackbar.show(responseJson['message'], kRed);

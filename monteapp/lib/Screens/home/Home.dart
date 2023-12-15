@@ -15,6 +15,8 @@ import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../Constants/colors.dart';
 import '../Category/CategoryDetailScreen.dart';
+import '../info/AboutMonte.dart';
+import '../info/termsOfUse.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -42,7 +44,8 @@ class _HomeState extends State<Home> {
   void initState() {
     getCart();
   }
-  getCart()async{
+
+  getCart() async {
     await DatabaseHelper().getCart();
   }
 }
@@ -54,12 +57,13 @@ class HomePortrait extends StatefulWidget {
   State<HomePortrait> createState() => _HomePortraitState();
 }
 
-class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderStateMixin{
+class _HomePortraitState extends State<HomePortrait>
+    with SingleTickerProviderStateMixin {
 
   late AnimationController _controller;
   late Animation<double> _animation;
   late Animation<double> _animation2;
-  List<String> menuOptions=['Games','Settings','Logout'];
+  List<String> menuOptions = ['Contact us', 'About Monte', 'Terms of use'];
 
   @override
   void initState() {
@@ -67,7 +71,8 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat(reverse: true);
+    )
+      ..repeat(reverse: true);
 
 
     _animation = Tween<double>(begin: 0, end: 10).animate(
@@ -83,11 +88,13 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
       ),
     );
   }
+
   @override
   void dispose() {
     super.dispose();
     _controller.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,7 +129,10 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
               child: GetBuilder<MainCategoryController>(
                 builder: (controller) {
                   return Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.6,
                     child: GridView.builder(
                       shrinkWrap: true,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -130,7 +140,8 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
                           // Adjust the number of columns as needed
                           childAspectRatio: 0.8),
                       itemCount:
-                          controller.mainCategoryList.length, // The number of balloons you want to display
+                      controller.mainCategoryList.length,
+                      // The number of balloons you want to display
                       itemBuilder: (context, index) {
                         // Generate a random index to select a balloon image and name
                         int randomIndex = Random()
@@ -150,18 +161,19 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
                   );
                 },
               )
-              ),
+          ),
           Positioned(
               left: 65,
               bottom: 20,
               child: AnimatedBuilder(
                 animation: _animation,
-                builder: (context,child){
+                builder: (context, child) {
                   return Transform.translate(
-                      offset: Offset(0,_animation.value),
+                    offset: Offset(0, _animation.value),
                     child: InkWell(
-                      onTap: (){
-                        Get.to(const ShopScreen(),transition: Transition.downToUp);
+                      onTap: () {
+                        Get.to(const ShopScreen(),
+                            transition: Transition.downToUp);
                       },
                       child: Image.asset(
                         "assets/images/shopImg.png",
@@ -176,48 +188,51 @@ class _HomePortraitState extends State<HomePortrait> with SingleTickerProviderSt
               )),
           Positioned(
               right: 10,
-              child:AnimatedBuilder(
-              animation: _animation2,
-              builder: (context,child){
-                return Transform.translate(
-                  offset: Offset(0,_animation2.value),
-                  child: InkWell(
-                    onTap: (){
-                      Get.to(const CartScreen(),transition: Transition.zoom);
-                    },
-                    child: Container(
-                        width: 100,
-                        height: 100,
-                        child: Stack(
-                            children: [
-                              Image.asset("assets/images/cartIcon.png"),
-                              Positioned(
-                                right: 20,
-                                top: 10,
-                                child: GetBuilder<CartController>(builder: (controller2) {
-                                  return  Visibility(
-                                    visible: controller2.cartModel==null?false:true,
-                                    child: Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                          color: kRed,
-                                          shape: BoxShape.circle
-                                      ),
-                                    ),
-                                  );
-                                },)
-                               ,
-                              )
-                            ],
-                        )),
-                  ),
-                );
-
-    }
+              child: AnimatedBuilder(
+                  animation: _animation2,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: Offset(0, _animation2.value),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(
+                              const CartScreen(), transition: Transition.zoom);
+                        },
+                        child: Container(
+                            width: 100,
+                            height: 100,
+                            child: Stack(
+                              children: [
+                                Image.asset("assets/images/cartIcon.png"),
+                                Positioned(
+                                  right: 20,
+                                  top: 10,
+                                  child: GetBuilder<CartController>(
+                                    builder: (controller2) {
+                                      return Visibility(
+                                        visible: controller2.cartModel == null
+                                            ? false
+                                            : true,
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          decoration: BoxDecoration(
+                                              color: kRed,
+                                              shape: BoxShape.circle
+                                          ),
+                                        ),
+                                      );
+                                    },)
+                                  ,
+                                )
+                              ],
+                            )),
+                      ),
+                    );
+                  }
               )
 
-              )
+          )
         ],
       ),
     );
@@ -251,7 +266,8 @@ class _BalloonTileState extends State<BalloonTile>
         parent: _controller,
         curve: Curves.easeInOut,
       ),
-    )..addStatusListener((status) {
+    )
+      ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
@@ -272,7 +288,7 @@ class _BalloonTileState extends State<BalloonTile>
     return InkWell(
       onTap: () async {
         List<SubCategoryModel> subCategoryList =
-            await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
+        await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
         if (subCategoryList.isNotEmpty) {
           Get.to(CategoryDetailScreen(subCategoryList),
               transition: Transition.circularReveal);
@@ -309,7 +325,8 @@ class _BalloonTileState extends State<BalloonTile>
 
 class MenuItem extends StatefulWidget {
   final String option;
-  const MenuItem(this.option,{super.key});
+
+  const MenuItem(this.option, {super.key});
 
   @override
   State<MenuItem> createState() => _MenuItemState();
@@ -318,18 +335,29 @@ class MenuItem extends StatefulWidget {
 class _MenuItemState extends State<MenuItem> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 50,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              fit: BoxFit.fill,
-              image: AssetImage("assets/images/menuItemBg.png"))),
-      child: Text(
-        "${widget.option}",
-        style: TextStyle(color: Colors.white, fontSize: 15),
-      ).marginOnly(top: 15),
+    return InkWell(
+      onTap: () {
+        if (widget.option=="Contact us"){
+
+        }else if(widget.option=="About Monte"){
+          Get.to(AboutMonte(),transition: Transition.zoom);
+        }else{
+          Get.to(TermsOfUse(),transition: Transition.zoom);
+        }
+      },
+      child: Container(
+        width: 100,
+        height: 50,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                fit: BoxFit.fill,
+                image: AssetImage("assets/images/menuItemBg.png"))),
+        child: Text(
+          "${widget.option}",
+          style: TextStyle(color: Colors.white, fontSize: 12),
+        ).marginOnly(top: 15),
+      ),
     );
   }
 }
@@ -342,20 +370,23 @@ class HomeLandscape extends StatefulWidget {
   State<HomeLandscape> createState() => _HomeLandscapeState();
 }
 
-class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProviderStateMixin{
+class _HomeLandscapeState extends State<HomeLandscape>
+    with SingleTickerProviderStateMixin {
 
   late AnimationController _controller;
   late Animation<double> _animation;
 
   late Animation<double> _animation2;
-  List<String> menuOptions=['Games','Settings','Logout'];
+  List<String> menuOptions = ['Contact us', 'About Monte', 'Terms of use'];
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
-    )..repeat(reverse: true);
+    )
+      ..repeat(reverse: true);
 
     _animation = Tween<double>(begin: 0, end: 10).animate(
       CurvedAnimation(
@@ -370,6 +401,7 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
       ),
     );
   }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -408,46 +440,56 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
               // right: 50,
               child: GetBuilder<MainCategoryController>(builder: (controller) {
                 return Container(
-                  height: MediaQuery.of(context).size.height * 0.7,
-                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.7,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.7,
                   // color: Colors.transparent,
                   child: Stack(
-                    children: List.generate(controller.mainCategoryList.length, (index) {
-                      return FanShape(index,controller.mainCategoryList[index]);
+                    children: List.generate(
+                        controller.mainCategoryList.length, (index) {
+                      return FanShape(index, controller
+                          .mainCategoryList[index]);
                     }),
                   ),
                 );
               },)),
           Positioned(
-              // right: 260,
+            // right: 260,
               bottom: 0,
               child: AnimatedBuilder(
-    animation: _animation,
-    builder: (context,child){
-    return Transform.translate(
-    offset: Offset(0,_animation.value),
-    child: InkWell(
-      onTap: (){
-        Get.to(const ShopScreen(),transition: Transition.downToUp);
-      },
-      child: Image.asset(
-        "assets/images/shopImg.png",
-        width: 150,
-        height: 150,
-      ),
-    ),
-    );
-    })),
+                  animation: _animation,
+                  builder: (context, child) {
+                    return Transform.translate(
+                      offset: Offset(0, _animation.value),
+                      child: InkWell(
+                        onTap: () {
+                          Get.to(const ShopScreen(),
+                              transition: Transition.downToUp);
+                        },
+                        child: Image.asset(
+                          "assets/images/shopImg.png",
+                          width: 150,
+                          height: 150,
+                        ),
+                      ),
+                    );
+                  })),
           Positioned(
               right: 10,
-              child:AnimatedBuilder(
+              child: AnimatedBuilder(
                   animation: _animation2,
-                  builder: (context,child){
+                  builder: (context, child) {
                     return Transform.translate(
-                      offset: Offset(0,_animation2.value),
+                      offset: Offset(0, _animation2.value),
                       child: InkWell(
-                        onTap: (){
-                          Get.to(const CartScreen(),transition: Transition.zoom);
+                        onTap: () {
+                          Get.to(
+                              const CartScreen(), transition: Transition.zoom);
                         },
                         child: Container(
                             width: 100,
@@ -458,26 +500,28 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
                                 Positioned(
                                   right: 20,
                                   top: 10,
-                                  child: GetBuilder<CartController>(builder: (controller2) {
-                                    return  Visibility(
-                                      visible: controller2.cartModel==null?false:true,
-                                      child: Container(
-                                        width: 20,
-                                        height: 20,
-                                        decoration: BoxDecoration(
-                                            color: kRed,
-                                            shape: BoxShape.circle
+                                  child: GetBuilder<CartController>(
+                                    builder: (controller2) {
+                                      return Visibility(
+                                        visible: controller2.cartModel == null
+                                            ? false
+                                            : true,
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          decoration: BoxDecoration(
+                                              color: kRed,
+                                              shape: BoxShape.circle
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },)
+                                      );
+                                    },)
                                   ,
                                 )
                               ],
                             )),
                       ),
                     );
-
                   }
               )
 
@@ -491,7 +535,8 @@ class _HomeLandscapeState extends State<HomeLandscape> with SingleTickerProvider
 class FanShape extends StatefulWidget {
   final int index;
   final MainCategoryModel mainCategoryModel;
-  const FanShape(this.index,this.mainCategoryModel, {super.key});
+
+  const FanShape(this.index, this.mainCategoryModel, {super.key});
 
   @override
   State<FanShape> createState() => _FanShapeState();
@@ -514,7 +559,8 @@ class _FanShapeState extends State<FanShape>
         parent: _controller,
         curve: Curves.easeInOut,
       ),
-    )..addStatusListener((status) {
+    )
+      ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
@@ -536,47 +582,48 @@ class _FanShapeState extends State<FanShape>
     final angle = (widget.index - 2.5) * 0.2;
     final balloonImage = 'assets/images/baloon${widget.index + 1}.png';
     return Positioned(
-      left: (widget.index + 0.3) * separation,
-      child: AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return  Transform.rotate(
-          angle: _animation.value,
-          child: InkWell(
-            onTap: ()async{
-              List<SubCategoryModel> subCategoryList =
-                  await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
-              await DatabaseHelper().playTapAudio();
-              if (subCategoryList.isNotEmpty) {
-                Get.to(CategoryDetailScreen(subCategoryList),
-                    transition: Transition.circularReveal);
-              } else {
-                CustomSnackbar.show("No data found", kRed);
-              }
-            },
-            child: Container(
-              width: 100,
-              alignment: Alignment.center,
-              height: 150,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(balloonImage),
-                  fit: BoxFit.fill,
+        left: (widget.index + 0.3) * separation,
+        child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return Transform.rotate(
+                angle: _animation.value,
+                child: InkWell(
+                  onTap: () async {
+                    List<SubCategoryModel> subCategoryList =
+                    await DatabaseHelper().getSubCategories(
+                        widget.mainCategoryModel);
+                    await DatabaseHelper().playTapAudio();
+                    if (subCategoryList.isNotEmpty) {
+                      Get.to(CategoryDetailScreen(subCategoryList),
+                          transition: Transition.circularReveal);
+                    } else {
+                      CustomSnackbar.show("No data found", kRed);
+                    }
+                  },
+                  child: Container(
+                    width: 100,
+                    alignment: Alignment.center,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(balloonImage),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    child: Text(
+                      widget.mainCategoryModel.name ?? "",
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                widget.mainCategoryModel.name ?? "",
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        );
-      }
-      )
+              );
+            }
+        )
 
     );
   }

@@ -129,8 +129,7 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                             },
                             controller: controller.phone,
                             textAlign: TextAlign.center,
-                            keyboardType: TextInputType.numberWithOptions(
-                                decimal: false, signed: true),
+                            keyboardType: TextInputType.phone,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14),
                             decoration: InputDecoration(
@@ -170,6 +169,8 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                               Get.focusScope?.unfocus();
                               if(controller.phone.text.isEmpty){
                                 CustomSnackbar.show("Phone field is required", kRed);
+                              }else if(!controller.phone.text.startsWith("+")){
+                                CustomSnackbar.show("Please add country code in phone", kRed);
                               }else{
                                 await DatabaseHelper().login();
                               }
@@ -364,8 +365,7 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
                               },
-                              keyboardType: TextInputType.numberWithOptions(
-                                  decimal: false, signed: true),
+                              keyboardType: TextInputType.phone,
                               textAlign: TextAlign.center,
                               controller: controller.phone,
                               style: const TextStyle(
@@ -407,6 +407,8 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                                 Get.focusScope?.unfocus();
                                 if(controller.phone.text.isEmpty){
                                   CustomSnackbar.show("Phone field is required", kRed);
+                                }else if(!controller.phone.text.startsWith("+")){
+                                  CustomSnackbar.show("Please add country code in phone", kRed);
                                 }else{
                                   await DatabaseHelper().login();
                                 }
