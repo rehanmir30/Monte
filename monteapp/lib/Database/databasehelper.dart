@@ -10,6 +10,7 @@ import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/AddressController.dart';
 import 'package:monteapp/Controllers/CardController.dart';
 import 'package:monteapp/Controllers/CartController.dart';
+import 'package:monteapp/Controllers/CountryCodeController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
 import 'package:monteapp/Controllers/PackageController.dart';
@@ -17,6 +18,7 @@ import 'package:monteapp/Controllers/ShopController.dart';
 import 'package:monteapp/Controllers/SignupController.dart';
 import 'package:monteapp/Controllers/UserController.dart';
 import 'package:monteapp/Models/CartModel.dart';
+import 'package:monteapp/Models/CountryCode.dart';
 import 'package:monteapp/Models/LevelModel.dart';
 import 'package:monteapp/Models/MainCategoryModel.dart';
 import 'package:monteapp/Models/PackageModel.dart';
@@ -57,12 +59,12 @@ class DatabaseHelper {
         levelList.add(levelModel);
       }
       return levelList;
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
       return levelList;
-    }else {
+    } else {
       CustomSnackbar.show("Failed to fetch levels", kRed);
       return levelList;
     }
@@ -70,35 +72,38 @@ class DatabaseHelper {
 
   //sign nup user
   Future<void> signUp() async {
-    // Get.to(const OTPScreen(),transition: Transition.circularReveal);
     SignupController signupController = Get.find<SignupController>();
     UserController userController = Get.find<UserController>();
+    CountryCodeController countryCodeController=Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
     Map<String, String> params = {
       'name': signupController.name.text,
       'email': signupController.email.text,
-      'phone': signupController.phone.text,
+      'phone': "${countryCodeController.selectedCountryCode?.code}${signupController.phone.text}",
       'dob': signupController.age.text,
       'level_id': signupController.selectedLevel?.id.toString() ?? ""
     };
+    print("Params: ${params}");
+    print("Params: ${signupController.phone.text}");
+    print("Params: ${countryCodeController.selectedCountryCode?.code}");
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.register);
     var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
       UserModel user = UserModel.fromMap(responseJson['data']);
       LoginController loginController = Get.find<LoginController>();
-      loginController.phone!=signupController.phone;
+      loginController.phone != signupController.phone;
       userController.setUser(user);
       Get.to(const OTPScreen(), transition: Transition.circularReveal);
       CustomSnackbar.show(responseJson['message'], kRed);
       return;
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else {
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       if (kDebugMode) {
         print(responseJson['message']);
       }
@@ -110,11 +115,12 @@ class DatabaseHelper {
   //login user
   Future<void> login() async {
     LoginController loginController = Get.find<LoginController>();
+    CountryCodeController countryCodeController=Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
     Map<String, String> params = {
-      'phone': loginController.phone.text,
+      'phone': "${countryCodeController.selectedCountryCode?.code}${loginController.phone.text}",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.login);
     var response = await http.post(url, headers: headers, body: params);
@@ -123,12 +129,12 @@ class DatabaseHelper {
       CustomSnackbar.show(responseJson['message'], kRed);
       Get.to(const OTPScreen(), transition: Transition.circularReveal);
       return;
-    }else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show(responseJson['message'], kRed);
       return;
-    }else {
+    } else {
       CustomSnackbar.show(responseJson['message'], kRed);
-      Get.to(SignupScreen(),transition: Transition.zoom);
+      Get.to(SignupScreen(), transition: Transition.zoom);
       return;
     }
   }
@@ -137,17 +143,19 @@ class DatabaseHelper {
   Future<void> loginVerifyOTP(context) async {
     UserController userController = Get.find<UserController>();
     LoginController loginController = Get.find<LoginController>();
+    CountryCodeController countryCodeController=Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
     Map<String, String> params = {
-      'phone': loginController.phone.text,
+      'phone': "${countryCodeController.selectedCountryCode?.code}${loginController.phone.text}",
       'otp': loginController.otp.text
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.verifyOtp);
     var response = await http.post(url, headers: headers, body: params);
 
     var responseJson = json.decode(response.body);
+    print(responseJson);
     if (response.statusCode == 200) {
       UserModel user = UserModel.fromMap(responseJson['data']);
       String token = responseJson['token'];
@@ -164,11 +172,11 @@ class DatabaseHelper {
         Get.offAll(const Home(), transition: Transition.circularReveal);
       }
       return;
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else {
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       if (kDebugMode) {
         print(responseJson['message']);
       }
@@ -193,13 +201,12 @@ class DatabaseHelper {
       print("Bearer: ${package.data?.package?.name}");
       Get.find<PackageController>().setPackageModel(package);
       Get.find<PackageController>().setPrice(true);
-      Get.to(PackageScreen(),transition: Transition.downToUp);
-
-    } else if(response.statusCode==401){
+      Get.to(PackageScreen(), transition: Transition.downToUp);
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else {
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       print("Api error: ${responseJson['message']}");
     }
   }
@@ -237,11 +244,11 @@ class DatabaseHelper {
       CustomSnackbar.show(responseJson['message'], kRed);
       await getMainCategories();
       return;
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else {
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       if (kDebugMode) {
         print(responseJson['message']);
       }
@@ -274,10 +281,10 @@ class DatabaseHelper {
       Get.offAll(const Home(), transition: Transition.circularReveal);
 
       return;
-    }else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
     } else {
       print("Get main Category error: ${responseJson['message']}");
     }
@@ -304,12 +311,12 @@ class DatabaseHelper {
         subCategoryList.add(subCategoryModel);
       }
       return subCategoryList;
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
       return subCategoryList;
-    }else {
+    } else {
       return subCategoryList;
     }
   }
@@ -322,7 +329,7 @@ class DatabaseHelper {
       "Accept": "application/json",
       "Authorization": "Bearer ${userController.userModel.accessToken}"
     };
-print("Bearer: ${userController.userModel.accessToken}");
+    print("Bearer: ${userController.userModel.accessToken}");
     var url = Uri.parse(ApiConstants.baseUrl +
         ApiConstants.getVideos +
         (subCategoryModel.id.toString()));
@@ -334,12 +341,12 @@ print("Bearer: ${userController.userModel.accessToken}");
         videoList.add(videoModel);
       }
       return videoList;
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
       return videoList;
-    }else {
+    } else {
       return videoList;
     }
   }
@@ -370,11 +377,11 @@ print("Bearer: ${userController.userModel.accessToken}");
       } else {
         Get.find<ShopController>().setToyShopModel(shopModel);
       }
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else {
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       if (kDebugMode) {
         print("Shop API Error: ${response.body}");
       }
@@ -396,52 +403,53 @@ print("Bearer: ${userController.userModel.accessToken}");
       'productId': shopProduct.id.toString(),
       "userId": userController.userModel.id.toString(),
       "price": shopProduct.price.toString(),
-      "quantity":"1"
+      "quantity": "1"
     };
     var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
-      CartModel cartModel=CartModel.fromMap(responseJson['data']);
+      CartModel cartModel = CartModel.fromMap(responseJson['data']);
       Get.find<CartController>().setCartModel(cartModel);
       CustomSnackbar.show(responseJson['message'], kRed);
-    } else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else {
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       print("Add to cart error: " + response.body.toString());
     }
   }
 
   //Get cart
-  Future<void>getCart()async{
+  Future<void> getCart() async {
     UserController userController = Get.find<UserController>();
 
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer ${userController.userModel.accessToken}"
     };
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getCart+"userId=${userController.userModel.id}");
+    var url = Uri.parse(ApiConstants.baseUrl +
+        ApiConstants.getCart +
+        "userId=${userController.userModel.id}");
     var response = await http.get(url, headers: headers);
     var responseJson = json.decode(response.body);
 
-    if(response.statusCode==200){
-      CartModel cartModel=CartModel.fromMap(responseJson['data']);
+    if (response.statusCode == 200) {
+      CartModel cartModel = CartModel.fromMap(responseJson['data']);
       Get.find<CartController>().setCartModel(cartModel);
-    }else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }
-    else{
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
       Get.find<CartController>().setCartModel(null);
-      print("Error in get cart: "+response.body);
+      print("Error in get cart: " + response.body);
       print(response.statusCode);
     }
   }
 
   //Remove item from cart
-  Future<void>removeProductFromCart(CartItem? cartItem)async{
+  Future<void> removeProductFromCart(CartItem? cartItem) async {
     UserController userController = Get.find<UserController>();
 
     Map<String, String> headers = {
@@ -453,26 +461,27 @@ print("Bearer: ${userController.userModel.accessToken}");
       "cartItemId": cartItem?.id.toString()
     };
 
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.removeProductFromCart);
-    var response = await http.post(url, headers: headers,body: params);
+    var url =
+        Uri.parse(ApiConstants.baseUrl + ApiConstants.removeProductFromCart);
+    var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
       // CartModel cartModel=CartModel.fromMap(responseJson['data']);
       // Get.find<CartController>().setCartModel(cartModel);
       await getCart();
       CustomSnackbar.show(responseJson['message'], kRed);
-    }else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
     }
   }
 
   //Place order
-  Future<void> placeOrder(String price)async{
+  Future<void> placeOrder(String price) async {
     UserController userController = Get.find<UserController>();
     CardController cardController = Get.find<CardController>();
-    AddressController addressController=Get.find<AddressController>();
+    AddressController addressController = Get.find<AddressController>();
 
     List<String> parts = cardController.expDateController.text.split("-");
     Map<String, String> headers = {
@@ -498,21 +507,41 @@ print("Bearer: ${userController.userModel.accessToken}");
     var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
-      if(responseJson['message']=='Payment completed Order Placed.'){
+      if (responseJson['message'] == 'Payment completed Order Placed.') {
         Get.find<CartController>().setCartModel(null);
         Get.back();
         Get.back();
       }
 
-
       CustomSnackbar.show(responseJson['message'], kRed);
-    }else if(response.statusCode==401){
+    } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
       SharedPref.removeStudent();
-      Get.offAll(LoginScreen(),transition: Transition.circularReveal);
-    }else{
-      print("Order place API error: "+response.body);
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
+      print("Order place API error: " + response.body);
       CustomSnackbar.show(responseJson['message'], kRed);
+    }
+  }
+
+  //Get Country Codes
+  Future<void>getCountryCodes()async{
+    CountryCodeController _countryCodeController=Get.find<CountryCodeController>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+    };
+    var url = Uri.parse(ApiConstants.baseUrl +ApiConstants.getCountryCodes);
+    var response = await http.get(url, headers: headers);
+    var responseJson = json.decode(response.body);
+    if(response.statusCode==200){
+      for(var code in responseJson['data']){
+        CountryCode countryCode=CountryCode.fromMap(code);
+        _countryCodeController.addCountryCode(countryCode);
+        print("countryCodevalue: ${countryCode.code}");
+      }
+      _countryCodeController.setSelectedCountry(_countryCodeController.countryCodeList[1]);
+    }else{
+      CustomSnackbar.show("Failed to get country codes", kRed);
     }
   }
 }

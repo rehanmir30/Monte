@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
+import 'package:monteapp/Controllers/CountryCodeController.dart';
 import 'package:monteapp/Controllers/LevelsController.dart';
 import 'package:monteapp/Controllers/SignupController.dart';
 import 'package:monteapp/Models/LevelModel.dart';
 import 'package:intl/intl.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 import '../../../Database/databasehelper.dart';
+import '../../../Models/CountryCode.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -251,7 +253,7 @@ class _SignupPortraitState extends State<SignupPortrait>
                                   return Theme(
                                     data: ThemeData.light().copyWith(
                                       primaryColor: const Color(0xffD90F4E),
-                                      accentColor: const Color(0xffD90F4E),
+                                      // accentColor: const Color(0xffD90F4E),
                                       colorScheme: const ColorScheme.light(
                                           primary: Colors.pink),
                                       buttonTheme: const ButtonThemeData(
@@ -306,47 +308,78 @@ class _SignupPortraitState extends State<SignupPortrait>
                         borderRadius: BorderRadius.circular(60),
                         elevation: 10,
                         color: Colors.transparent,
-                        child: SizedBox(
+                        child: Container(
                           width: 150,
                           height: 40,
-                          child: TextFormField(
-                            controller: controller.phone,
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.phone,
-                            decoration: InputDecoration(
-                              hintText: 'Phone Number',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow,
-                                    width:
-                                        2.0), // Change the color and width here
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                //<-- SEE HERE
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                //<-- SEE HERE
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                              color: kRed,
+                              borderRadius: BorderRadius.circular(60),
+                              border:Border.all(color: kYellow,width: 2)
                           ),
+                          child: GetBuilder<CountryCodeController>(builder: (controller2) {
+                            return Row(
+                              children: [
+                                SizedBox(
+                                  width:50,
+                                  child: DropdownButton<CountryCode>(
+                                    value: controller2.selectedCountryCode,
+                                    dropdownColor: kRed,
+                                    onChanged: (CountryCode? newValue) {
+                                      controller2.setSelectedCountry(newValue!);
+                                    },
+                                    items: controller2.countryCodeList.map<DropdownMenuItem<CountryCode>>((CountryCode value) {
+                                      return DropdownMenuItem<CountryCode>(
+                                        value: value,
+                                        child: Text(
+                                            "${value.code}",style: TextStyle(color: Colors.white),),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: controller.phone,
+                                    onTap: () async {
+                                      await DatabaseHelper().playTapAudio();
+                                    },
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 14),
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.phone,
+                                    decoration: InputDecoration(
+                                      hintText: 'Phone Number',
+                                      // filled: true,
+                                      hintStyle: const TextStyle(
+                                          color: Colors.white, fontSize: 14),
+                                      // fillColor: const Color(0xffD90F4E),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(60),
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent,
+                                            width:
+                                            2.0), // Change the color and width here
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent, width: 2.0),
+                                        //<-- SEE HERE
+                                        borderRadius: BorderRadius.circular(50.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent, width: 2.0),
+                                        //<-- SEE HERE
+                                        borderRadius: BorderRadius.circular(50.0),
+                                      ),
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 3.5, top: 2.5, bottom: 2.5),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },),
                         ),
                       ).marginOnly(top: 10),
                       Material(
@@ -426,14 +459,11 @@ class _SignupPortraitState extends State<SignupPortrait>
                           borderRadius: BorderRadius.circular(60),
                           child: InkWell(
                             onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                              if(controller.phone.text.startsWith("+")){
-                                await DatabaseHelper().signUp();
-                              }else{
-                                CustomSnackbar.show("Please add country code in phone", kRed);
+                              if(controller.phone.text.startsWith("0")){
+                                controller.phone.text.replaceFirst("0", '');
                               }
-
-                              // Get.to(const OTPScreen(),transition: Transition.circularReveal);
+                              await DatabaseHelper().playTapAudio();
+                                await DatabaseHelper().signUp();
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -700,8 +730,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                           data: ThemeData.light().copyWith(
                                             primaryColor:
                                                 const Color(0xffD90F4E),
-                                            accentColor:
-                                                const Color(0xffD90F4E),
+                                            // accentColor:
+                                            //     const Color(0xffD90F4E),
                                             colorScheme:
                                                 const ColorScheme.light(
                                                     primary: Colors.pink),
@@ -813,47 +843,77 @@ class _SignupLandscapeState extends State<SignupLandscape>
                               borderRadius: BorderRadius.circular(60),
                               elevation: 10,
                               color: Colors.transparent,
-                              child: SizedBox(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8),
                                 width: 150,
                                 height: 40,
-                                child: TextFormField(
-                                  controller: controller.phone,
-                                  onTap: () async {
-                                    await DatabaseHelper().playTapAudio();
-                                  },
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 14),
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.phone,
-                                  decoration: InputDecoration(
-                                    hintText: 'Phone Number',
-                                    filled: true,
-                                    hintStyle: const TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                    fillColor: const Color(0xffD90F4E),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(60),
-                                      borderSide: const BorderSide(
-                                          color: Colors.yellow,
-                                          width:
-                                              2.0), // Change the color and width here
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.yellow, width: 2.0),
-                                      //<-- SEE HERE
-                                      borderRadius: BorderRadius.circular(50.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Colors.yellow, width: 2.0),
-                                      //<-- SEE HERE
-                                      borderRadius: BorderRadius.circular(50.0),
-                                    ),
-                                    contentPadding: const EdgeInsets.only(
-                                        left: 3.5, top: 2.5, bottom: 2.5),
-                                  ),
+                                decoration: BoxDecoration(
+                                    color: kRed,
+                                    borderRadius: BorderRadius.circular(60),
+                                    border:Border.all(color: kYellow,width: 2)
                                 ),
+                                child: GetBuilder<CountryCodeController>(builder: (controller2) {
+                                  return Row(
+                                    children: [
+                                      SizedBox(
+                                        width:50,
+                                        child: DropdownButton<CountryCode>(
+                                          value: controller2.selectedCountryCode,
+                                          dropdownColor: kRed,
+                                          onChanged: (CountryCode? newValue) {
+                                            controller2.setSelectedCountry(newValue!);
+                                          },
+                                          items: controller2.countryCodeList.map<DropdownMenuItem<CountryCode>>((CountryCode value) {
+                                            return DropdownMenuItem<CountryCode>(
+                                              value: value,
+                                              child: Text("${value.code}",style: TextStyle(color: Colors.white),),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: TextFormField(
+                                          controller: controller.phone,
+                                          onTap: () async {
+                                            await DatabaseHelper().playTapAudio();
+                                          },
+                                          style: const TextStyle(
+                                              color: Colors.white, fontSize: 14),
+                                          textAlign: TextAlign.center,
+                                          keyboardType: TextInputType.phone,
+                                          decoration: InputDecoration(
+                                            hintText: 'Phone Number',
+                                            // filled: true,
+                                            hintStyle: const TextStyle(
+                                                color: Colors.white, fontSize: 12),
+                                            // fillColor: const Color(0xffD90F4E),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(60),
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent,
+                                                  width:
+                                                  2.0), // Change the color and width here
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent, width: 2.0),
+                                              //<-- SEE HERE
+                                              borderRadius: BorderRadius.circular(50.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                  color: Colors.transparent, width: 2.0),
+                                              //<-- SEE HERE
+                                              borderRadius: BorderRadius.circular(50.0),
+                                            ),
+                                            contentPadding: const EdgeInsets.only(
+                                                left: 3.5, top: 2.5, bottom: 2.5),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },),
                               ),
                             ).marginOnly(top: 10),
                           ],
@@ -938,11 +998,11 @@ class _SignupLandscapeState extends State<SignupLandscape>
                             child: InkWell(
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
-                                if(controller.phone.text.startsWith("+")){
-                                  await DatabaseHelper().signUp();
-                                }else{
-                                  CustomSnackbar.show("Please add country code in phone", kRed);
+                                if(controller.phone.text.startsWith("0")){
+                                  controller.phone.text.replaceFirst("0", '');
                                 }
+                                await DatabaseHelper().signUp();
+
                               },
                               child: Container(
                                 alignment: Alignment.center,

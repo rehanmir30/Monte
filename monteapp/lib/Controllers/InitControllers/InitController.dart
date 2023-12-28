@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:monteapp/Controllers/AddressController.dart';
 import 'package:monteapp/Controllers/CardController.dart';
 import 'package:monteapp/Controllers/CartController.dart';
+import 'package:monteapp/Controllers/CountryCodeController.dart';
 import 'package:monteapp/Controllers/LevelsController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
@@ -24,6 +25,7 @@ class InitController with Bindings{
     Get.put(CartController(),permanent: true);
     Get.put(PackageController(),permanent: true);
     Get.put(AddressController(),permanent: true);
+    Get.put(CountryCodeController(),permanent: true);
   }
 
 

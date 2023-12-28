@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
+import 'package:monteapp/Controllers/CountryCodeController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Screens/auth/OTP/OTPScreen.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
+import '../../../Models/CountryCode.dart';
 import '../Signup/SignUpScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +18,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return OrientationBuilder(
@@ -27,6 +32,14 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
     );
+  }
+
+  @override
+  void initState() {
+    getCountryCode();
+  }
+  getCountryCode()async{
+    await DatabaseHelper().getCountryCodes();
   }
 }
 
@@ -120,43 +133,74 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                         elevation: 10,
                         borderRadius: BorderRadius.circular(60),
                         color: Colors.transparent,
-                        child: SizedBox(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
                           width: 150,
                           height: 40,
-                          child: TextFormField(
-                            onTap: () async {
-                              await DatabaseHelper().playTapAudio();
-                            },
-                            controller: controller.phone,
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.phone,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                            decoration: InputDecoration(
-                              hintText: 'Phone',
-                              filled: true,
-                              hintStyle: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              fillColor: const Color(0xffD90F4E),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(60),
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                    color: Colors.yellow, width: 2.0),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              contentPadding: const EdgeInsets.only(
-                                  left: 3.5, top: 2.5, bottom: 2.5),
-                            ),
+                          decoration: BoxDecoration(
+                            color: kRed,
+                            borderRadius: BorderRadius.circular(60),
+                            border:Border.all(color: kYellow,width: 2)
                           ),
+                          child: GetBuilder<CountryCodeController>(builder: (controller2) {
+                            return  Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width:50,
+                                  child: DropdownButton<CountryCode>(
+                                    value: controller2.selectedCountryCode,
+                                    dropdownColor: kRed,
+                                    onChanged: (CountryCode? newValue) {
+                                      controller2.setSelectedCountry(newValue!);
+                                    },
+                                    items: controller2.countryCodeList.map<DropdownMenuItem<CountryCode>>((CountryCode value) {
+                                      return DropdownMenuItem<CountryCode>(
+                                        value: value,
+                                        child: Text("${value.code}"??"",style: TextStyle(color: Colors.white),),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    onTap: () async {
+                                      await DatabaseHelper().playTapAudio();
+                                    },
+                                    controller: controller.phone,
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.phone,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 14),
+                                    decoration: InputDecoration(
+                                      hintText: 'Phone',
+                                      // filled: true,
+                                      hintStyle: const TextStyle(
+                                          color: Colors.white, fontSize: 14),
+                                      // fillColor: const Color(0xffD90F4E),
+                                      border: OutlineInputBorder(
+                                        // borderRadius: BorderRadius.circular(60),
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent, width: 0.0),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent, width: 0.0),
+                                        // borderRadius: BorderRadius.circular(50.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: Colors.transparent, width: 0.0),
+                                        // borderRadius: BorderRadius.circular(50.0),
+                                      ),
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 3.5, top: 2.5, bottom: 2.5),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },),
                         ),
                       ),
                       Material(
@@ -169,9 +213,10 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                               Get.focusScope?.unfocus();
                               if(controller.phone.text.isEmpty){
                                 CustomSnackbar.show("Phone field is required", kRed);
-                              }else if(!controller.phone.text.startsWith("+")){
-                                CustomSnackbar.show("Please add country code in phone", kRed);
                               }else{
+                                if(controller.phone.text.startsWith("0")){
+                                  controller.phone.text.replaceFirst("0", '');
+                                }
                                 await DatabaseHelper().login();
                               }
 
@@ -358,45 +403,76 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                           elevation: 10,
                           borderRadius: BorderRadius.circular(60),
                           color: Colors.transparent,
-                          child: SizedBox(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
                             width: 150,
                             height: 40,
-                            child: TextFormField(
-                              onTap: () async {
-                                await DatabaseHelper().playTapAudio();
-                              },
-                              keyboardType: TextInputType.phone,
-                              textAlign: TextAlign.center,
-                              controller: controller.phone,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 14),
-                              decoration: InputDecoration(
-                                hintText: 'Phone',
-                                filled: true,
-                                hintStyle: const TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                                fillColor: const Color(0xffD90F4E),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(60),
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow, width: 2.0),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow, width: 2.0),
-                                  borderRadius: BorderRadius.circular(50.0),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.yellow, width: 2.0),
-                                  borderRadius: BorderRadius.circular(50.0),
-                                ),
-                                contentPadding: const EdgeInsets.only(
-                                    left: 3.5, top: 2.5, bottom: 2.5),
-                              ),
+                            decoration: BoxDecoration(
+                                color: kRed,
+                                borderRadius: BorderRadius.circular(60),
+                                border:Border.all(color: kYellow,width: 2)
                             ),
+                            child: GetBuilder<CountryCodeController>(builder: (controller2) {
+                              return Row(
+                                children: [
+                                  SizedBox(
+                                    width:50,
+                                    child: DropdownButton<CountryCode>(
+                                      value: controller2.selectedCountryCode,
+                                      dropdownColor: kRed,
+                                      onChanged: (CountryCode? newValue) {
+                                       controller2.setSelectedCountry(newValue!);
+                                      },
+                                      items: controller2.countryCodeList.map<DropdownMenuItem<CountryCode>>((CountryCode value) {
+                                        return DropdownMenuItem<CountryCode>(
+                                          value: value,
+                                          child: Text("${value.code}",style: TextStyle(color: Colors.white),),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      onTap: () async {
+                                        await DatabaseHelper().playTapAudio();
+                                      },
+                                      keyboardType: TextInputType.phone,
+                                      textAlign: TextAlign.center,
+                                      controller: controller.phone,
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 14),
+                                      decoration: InputDecoration(
+                                        hintText: 'Phone',
+                                        // filled: true,
+                                        hintStyle: const TextStyle(
+                                            color: Colors.white, fontSize: 14),
+                                        fillColor: const Color(0xffD90F4E),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(60),
+                                          borderSide: const BorderSide(
+                                              color: Colors.transparent, width: 0.0),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.transparent, width: 0.0),
+                                          borderRadius: BorderRadius.circular(50.0),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.transparent, width: 0.0),
+                                          borderRadius: BorderRadius.circular(50.0),
+                                        ),
+                                        contentPadding: const EdgeInsets.only(
+                                            left: 3.5, top: 2.5, bottom: 2.5),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },),
                           ),
                         ),
+
                         Material(
                             elevation: 10,
                             color: Colors.transparent,
@@ -407,9 +483,10 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                                 Get.focusScope?.unfocus();
                                 if(controller.phone.text.isEmpty){
                                   CustomSnackbar.show("Phone field is required", kRed);
-                                }else if(!controller.phone.text.startsWith("+")){
-                                  CustomSnackbar.show("Please add country code in phone", kRed);
                                 }else{
+                                  if(controller.phone.text.startsWith("0")){
+                                    controller.phone.text.replaceFirst("0", '');
+                                  }
                                   await DatabaseHelper().login();
                                 }
 

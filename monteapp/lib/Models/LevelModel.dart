@@ -5,8 +5,8 @@ LevelModel levelFromMap(String str) => LevelModel.fromMap(json.decode(str));
 String levelToMap(LevelModel data) => json.encode(data.toMap());
 
 class LevelModel {
-  int? id;
-  String? name;
+  var id;
+  var name;
 
   LevelModel({
     this.id,

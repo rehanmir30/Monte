@@ -1,7 +1,8 @@
 class ApiConstants{
 
   // static const baseUrl="https://montee.site/api/";
-  static const baseUrl="https://atifsaeed.a2hosted.com/api/";
+  // static const baseUrl="https://atifsaeed.a2hosted.com/api/";
+  static const baseUrl="https://montekids.co.in/api/";
 
   //Get levels
   static const levelUrl = "levels";
@@ -44,6 +45,10 @@ class ApiConstants{
 
   //Remove product from cart
   static const removeProductFromCart = "remove-cart?";
+
+  //Get country codes
+  static const getCountryCodes = "codes";
+
 
 
 }

@@ -234,7 +234,7 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                                     return Theme(
                                       data: ThemeData.light().copyWith(
                                         primaryColor: const Color(0xffD90F4E),
-                                        accentColor: const Color(0xffD90F4E),
+                                        // accentColor: const Color(0xffD90F4E),
                                         colorScheme: const ColorScheme.light(
                                             primary: Colors.pink),
                                         buttonTheme: const ButtonThemeData(
@@ -634,7 +634,7 @@ class _BuyPackageLandscapeState extends State<BuyPackageLandscape>
                                     return Theme(
                                       data: ThemeData.light().copyWith(
                                         primaryColor: const Color(0xffD90F4E),
-                                        accentColor: const Color(0xffD90F4E),
+                                        // accentColor: const Color(0xffD90F4E),
                                         colorScheme: const ColorScheme.light(
                                             primary: Colors.pink),
                                         buttonTheme: const ButtonThemeData(

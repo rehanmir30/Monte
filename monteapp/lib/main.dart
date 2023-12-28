@@ -31,6 +31,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -41,16 +43,6 @@ class _MyAppState extends State<MyApp> {
           fontFamily: "forte",
         ),
         home: const SplashScreenLandscape()
-        // OrientationBuilder(
-        //   builder: (context, orientation) {
-        //     if(orientation==Orientation.portrait){
-        //       return const SplashScreenPortrait();
-        //     }else{
-        //       return const SplashScreenLandscape();
-        //     }
-        //   },
-        // )
-
         );
   }
 }
@@ -73,7 +65,7 @@ bool skipVisibility=false;
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    Future.delayed(Duration(seconds: 4),(){
+    Future.delayed(Duration(seconds: 5),(){
       setState(() {
         skipVisibility=true;
       });
@@ -160,57 +152,3 @@ bool skipVisibility=false;
     );
   }
 }
-// class _SplashScreenLandscapeState extends State<SplashScreenLandscape> {
-//
-//   bool _isVisible = false;
-//   @override
-//   void initState() {
-//     Future.delayed(const Duration(milliseconds: 2000), () {
-//       setState(() {
-//         _isVisible = true;
-//       });
-//     });
-//
-//     Future.delayed(const Duration(milliseconds: 4000), () async {
-//       Get.offAll(const LoginScreen(),transition: Transition.downToUp);
-//       // getSharedPrefs();
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Container(
-//         width: MediaQuery.of(context).size.width,
-//         height: MediaQuery.of(context).size.height,
-//         decoration: const BoxDecoration(
-//             image: DecorationImage(
-//               fit: BoxFit.cover,
-//                 image: AssetImage("assets/images/splashBgLandscape.jpg")
-//             )
-//         ),
-//         child: Align(
-//           alignment: Alignment.center,
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               const Text("Where fun meets learning!",textAlign: TextAlign.center,style: TextStyle(color: Colors.red,fontSize: 36),).marginSymmetric(horizontal: 20),
-//               AnimatedContainer(
-//                 width: _isVisible ? 0 : 150,
-//                 height: _isVisible ? 0 : 150,
-//                 curve: Curves.bounceIn,
-//                 duration: const Duration(seconds: 2),
-//                 decoration: const BoxDecoration(
-//                   image: DecorationImage(
-//                     image: AssetImage("assets/images/splashKidLandscape.png"),
-//                   ),
-//                 ),
-//               ).marginOnly(top: 40)
-//             ],
-//           ),
-//         ),
-//       ),
-//     );;
-//   }
-// }
