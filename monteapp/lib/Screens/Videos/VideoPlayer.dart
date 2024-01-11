@@ -196,7 +196,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
                             ],
                           ),
                         ),
-
                       ],
 
                     ),
