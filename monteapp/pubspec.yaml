@@ -43,6 +43,7 @@ dependencies:
   shared_preferences:
   connectivity:
   flutter_windowmanager:
+  flutter_stripe:
 
 dev_dependencies:
   flutter_test:

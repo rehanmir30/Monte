@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Controllers/LoadingController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../../Constants/colors.dart';
 import '../../../Database/databasehelper.dart';
+import '../../../Widgets/LoadingAnimation.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});
@@ -180,7 +182,9 @@ class _OTPPortraitState extends State<OTPPortrait>
                                   onTap: () async {
                                     await DatabaseHelper().playTapAudio();
                                     if(controller.otp.text.isNotEmpty){
+                                      Get.find<LoadingController>().setLoading(true);
                                       await DatabaseHelper().loginVerifyOTP(context);
+                                      Get.find<LoadingController>().setLoading(false);
                                     }else{
                                       CustomSnackbar.show("OTP field should not be empty", kRed);
                                     }
@@ -263,6 +267,7 @@ class _OTPPortraitState extends State<OTPPortrait>
                       child: Image.asset("assets/images/monte.png",width: 100,height: 100,))
                 ],
               )),
+          LoadingAnimation(),
         ],
       ),
     );
@@ -367,7 +372,9 @@ class _OTPLandscapeState extends State<OTPLandscape> {
                                     CustomSnackbar.show("Please wait few seconds to resend OTP", kRed);
                                   }else{
                                     controller.startTimer();
+                                    Get.find<LoadingController>().setLoading(true);
                                     await DatabaseHelper().loginVerifyOTP(context);
+                                    Get.find<LoadingController>().setLoading(false);
                                   }
                                 }else{
                                   CustomSnackbar.show("OTP field should not be empty", kRed);
@@ -418,7 +425,8 @@ class _OTPLandscapeState extends State<OTPLandscape> {
                 )
               ],
             ),
-          ).marginOnly(left: 35)
+          ).marginOnly(left: 35),
+          LoadingAnimation()
         ],
       ),
     );

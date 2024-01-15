@@ -385,8 +385,9 @@ class _AddressPortraitState extends State<AddressPortrait>
                                 CustomSnackbar.show("All fields are required", kRed);
                                 return;
                               }else{
-                                Get.to(BuyPackage(widget.price, "BuyPackage"),
-                                    transition: Transition.upToDown);
+                                await DatabaseHelper().makeStripePayment(widget.price);
+                                // Get.to(BuyPackage(widget.price, "BuyPackage"),
+                                //     transition: Transition.upToDown);
                               }
                             },
                             child: Container(
@@ -407,7 +408,7 @@ class _AddressPortraitState extends State<AddressPortrait>
                                 ),
                               ),
                               child: const Text(
-                                "Add card details",
+                                "Make Payment",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 12),
                               ),
@@ -800,8 +801,9 @@ class _AddressLandscapeState extends State<AddressLandscape> with SingleTickerPr
                                   CustomSnackbar.show("All fields are required", kRed);
                                   return;
                                 }else{
-                                  Get.to(BuyPackage(widget.price, "BuyPackage"),
-                                      transition: Transition.upToDown);
+                                  await DatabaseHelper().makeStripePayment(widget.price);
+                                  // Get.to(BuyPackage(widget.price, "BuyPackage"),
+                                  //     transition: Transition.upToDown);
                                 }
                               },
                               child: Container(
@@ -822,7 +824,7 @@ class _AddressLandscapeState extends State<AddressLandscape> with SingleTickerPr
                                   ),
                                 ),
                                 child: const Text(
-                                  "Add card details",
+                                  "Make Payment",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 12),
                                 ),

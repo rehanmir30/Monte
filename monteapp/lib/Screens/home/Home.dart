@@ -9,6 +9,7 @@ import 'package:monteapp/Controllers/UserController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Models/MainCategoryModel.dart';
 import 'package:monteapp/Models/SubCategoryModel.dart';
+import 'package:monteapp/Screens/info/ContactUs.dart';
 import 'package:monteapp/Screens/shop/CartScreen.dart';
 import 'package:monteapp/Screens/shop/ShopScreen.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
@@ -338,7 +339,7 @@ class _MenuItemState extends State<MenuItem> {
     return InkWell(
       onTap: () {
         if (widget.option=="Contact us"){
-
+          Get.to(ContactUs(),transition: Transition.zoom);
         }else if(widget.option=="About Monte"){
           Get.to(AboutMonte(),transition: Transition.zoom);
         }else{

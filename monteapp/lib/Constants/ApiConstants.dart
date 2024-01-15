@@ -49,6 +49,8 @@ class ApiConstants{
   //Get country codes
   static const getCountryCodes = "codes";
 
+  //Contact us
+  static const postContactUs = "message?";
 
 
 }

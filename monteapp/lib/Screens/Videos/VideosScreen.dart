@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Screens/Videos/VideoPlayer.dart';
+import 'package:monteapp/Widgets/BackButton.dart';
 
 import '../../Models/VideoModel.dart';
 
@@ -161,7 +162,8 @@ class _VideoScreenPortraitState extends State<VideoScreenPortrait>
                     );
                   });
             },
-          ),
+          ).marginOnly(top: 80),
+          Back()
         ],
       ),
     );
@@ -308,7 +310,8 @@ class _VideoScreenLandscapeState extends State<VideoScreenLandscape>
                     );
                   },
                 ),
-              ))
+              )),
+          Back()
         ],
       ),
     );

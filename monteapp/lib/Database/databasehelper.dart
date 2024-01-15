@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:monteapp/Constants/SharedPref/shared_pref_services.dart';
@@ -74,14 +75,16 @@ class DatabaseHelper {
   Future<void> signUp() async {
     SignupController signupController = Get.find<SignupController>();
     UserController userController = Get.find<UserController>();
-    CountryCodeController countryCodeController=Get.find<CountryCodeController>();
+    CountryCodeController countryCodeController =
+        Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
     Map<String, String> params = {
       'name': signupController.name.text,
       'email': signupController.email.text,
-      'phone': "${countryCodeController.selectedCountryCode?.code}${signupController.phone.text}",
+      'phone':
+          "${countryCodeController.selectedCountryCode?.code}${signupController.phone.text}",
       'dob': signupController.age.text,
       'level_id': signupController.selectedLevel?.id.toString() ?? ""
     };
@@ -115,12 +118,14 @@ class DatabaseHelper {
   //login user
   Future<void> login() async {
     LoginController loginController = Get.find<LoginController>();
-    CountryCodeController countryCodeController=Get.find<CountryCodeController>();
+    CountryCodeController countryCodeController =
+        Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
     Map<String, String> params = {
-      'phone': "${countryCodeController.selectedCountryCode?.code}${loginController.phone.text}",
+      'phone':
+          "${countryCodeController.selectedCountryCode?.code}${loginController.phone.text}",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.login);
     var response = await http.post(url, headers: headers, body: params);
@@ -143,12 +148,14 @@ class DatabaseHelper {
   Future<void> loginVerifyOTP(context) async {
     UserController userController = Get.find<UserController>();
     LoginController loginController = Get.find<LoginController>();
-    CountryCodeController countryCodeController=Get.find<CountryCodeController>();
+    CountryCodeController countryCodeController =
+        Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
     Map<String, String> params = {
-      'phone': "${countryCodeController.selectedCountryCode?.code}${loginController.phone.text}",
+      'phone':
+          "${countryCodeController.selectedCountryCode?.code}${loginController.phone.text}",
       'otp': loginController.otp.text
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.verifyOtp);
@@ -480,27 +487,31 @@ class DatabaseHelper {
   //Place order
   Future<void> placeOrder(String price) async {
     UserController userController = Get.find<UserController>();
-    CardController cardController = Get.find<CardController>();
+    // CardController cardController = Get.find<CardController>();
     AddressController addressController = Get.find<AddressController>();
 
-    List<String> parts = cardController.expDateController.text.split("-");
+    // List<String> parts = cardController.expDateController.text.split("-");
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer ${userController.userModel.accessToken}"
     };
+    print("heellllll: ${userController.userModel.id}");
     Map<String, dynamic> params = {
-      'fullName': cardController.nameController.text,
-      "cardNumber": cardController.cardNumberController.text,
-      "month": parts[1],
-      "year": parts[0],
-      "cvv": cardController.cvvController.text,
-      "price": price,
+      // 'fullName': cardController.nameController.text,
+      // "cardNumber": cardController.cardNumberController.text,
+      // "month": parts[1],
+      // "year": parts[0],
+      // "cvv": cardController.cvvController.text,
+      "userId": userController.userModel.id,
+      "amount": price,
       "userId": "${userController.userModel.id}",
       "address": "${addressController.homeAddress}",
       "city": "${addressController.city}",
       "state": "${addressController.state}",
       "country": "${addressController.country}",
       "pincode": "${addressController.postalCode}",
+      "payment_id": "${addressController.paymentId}",
+      "receipt_url": "",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.orderPayment);
 
@@ -525,23 +536,126 @@ class DatabaseHelper {
   }
 
   //Get Country Codes
-  Future<void>getCountryCodes()async{
-    CountryCodeController _countryCodeController=Get.find<CountryCodeController>();
+  Future<void> getCountryCodes() async {
+    CountryCodeController _countryCodeController =
+        Get.find<CountryCodeController>();
     Map<String, String> headers = {
       "Accept": "application/json",
     };
-    var url = Uri.parse(ApiConstants.baseUrl +ApiConstants.getCountryCodes);
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getCountryCodes);
     var response = await http.get(url, headers: headers);
     var responseJson = json.decode(response.body);
-    if(response.statusCode==200){
-      for(var code in responseJson['data']){
-        CountryCode countryCode=CountryCode.fromMap(code);
+    if (response.statusCode == 200) {
+      for (var code in responseJson['data']) {
+        CountryCode countryCode = CountryCode.fromMap(code);
         _countryCodeController.addCountryCode(countryCode);
         print("countryCodevalue: ${countryCode.code}");
       }
-      _countryCodeController.setSelectedCountry(_countryCodeController.countryCodeList[1]);
-    }else{
+      _countryCodeController
+          .setSelectedCountry(_countryCodeController.countryCodeList[1]);
+    } else {
       CustomSnackbar.show("Failed to get country codes", kRed);
+    }
+  }
+
+  //Strip payment functions start
+  Future<void> makeStripePayment(String price) async {
+    Stripe.publishableKey =
+        "pk_live_51O2pdJSIJU0eR5PXPwM4BRkgfLHeOwdAMbsSgOUEOjDHJ9SWAw0zzmH0n0XTXtti0H9PGMdr3az1DuQjep0ylEXL004vew5qd6";
+    Map<String, dynamic>? paymentIntent;
+    await confirmPayment(paymentIntent, price);
+  }
+
+  confirmPayment(paymentIntent, price) async {
+    try {
+      paymentIntent = await createPaymentIntent(price);
+
+      var gpay = PaymentSheetGooglePay(
+        merchantCountryCode: "IN",
+        currencyCode: "INR",
+        testEnv: false,
+      );
+      await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntent!["client_secret"],
+              merchantDisplayName: "Monte",
+              googlePay: gpay));
+      await displayPaymentSheet(price);
+    } catch (e) {
+      throw Exception("Confirm Payment: " + e.toString());
+    }
+  }
+
+  createPaymentIntent(String price) async {
+    UserController userController = Get.find<UserController>();
+
+    try {
+      String integerPart = price.split('.')[0];
+      Map<String, dynamic> body = {
+        "amount": "${integerPart}00",
+        "currency": "INR",
+        "description": "Shop items purchase",
+      };
+      Map<String, dynamic> userBody = {
+        "email": "${userController.userModel.email}",
+        "name": "${userController.userModel.name}",
+      };
+      http.Response createUserResponse = await http.post(
+          Uri.parse("https://api.stripe.com/v1/customers"),
+          body: userBody,
+          headers: {
+            "Authorization":
+                "Bearer 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",
+            "Content-Type": "application/x-www-form-urlencoded"
+          });
+      http.Response response = await http.post(
+          Uri.parse("https://api.stripe.com/v1/payment_intents"),
+          body: body,
+          headers: {
+            "Authorization":
+                "Bearer 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",
+            "Content-Type": "application/x-www-form-urlencoded"
+          });
+      var responseJson = json.decode(response.body);
+      Get.find<AddressController>().setPaymentId(responseJson['id']);
+      return json.decode(response.body);
+    } catch (e) {
+      throw Exception("Create payment intent: " + e.toString());
+    }
+  }
+
+  displayPaymentSheet(price) async {
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      print("Done");
+      await placeOrder(price);
+    } catch (e) {
+      print("Failed");
+      print("Display Payment Sheet: ${e.toString()}");
+    }
+  }
+  //Strip payment functions end
+
+  //contact us
+  sendContactUs(String text, String text2, String text3, String text4) async {
+    Map<String, String> headers = {
+      "Accept": "application/json",
+    };
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.postContactUs);
+
+    Map<String, dynamic> params = {
+      'name': text,
+      "email": text2,
+      "phone": text3,
+      "message": text4
+    };
+    var response = await http.post(url, headers: headers, body: params);
+    var responseJson = json.decode(response.body);
+    if(response.statusCode==200&&responseJson['success']==true){
+      Get.back();
+      CustomSnackbar.show(responseJson['message'], kRed);
+    }else{
+      CustomSnackbar.show(responseJson['message'], kRed);
     }
   }
 }

@@ -92,7 +92,7 @@ class _ShopItemState extends State<ShopItem> {
                         children: [
                           Text(widget._shopProduct.name,style: const TextStyle(color: kPink,fontSize: 16,fontWeight: FontWeight.w700),),
                           SizedBox(height: 10,),
-                          Text("\$${widget._shopProduct.price}",style: TextStyle(color: kPink),),
+                          Text("INR ${widget._shopProduct.price}",style: TextStyle(color: kPink),),
                         ],
                       ),
                     ),

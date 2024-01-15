@@ -9,6 +9,7 @@ import 'package:monteapp/Screens/shop/Tabs/ToysPortrait.dart';
 
 import '../../Constants/colors.dart';
 import '../../Controllers/CartController.dart';
+import '../../Widgets/BackButton.dart';
 import 'CartScreen.dart';
 
 class ShopScreen extends StatefulWidget {
@@ -67,7 +68,7 @@ class _ShopPortraitState extends State<ShopPortrait>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     // Add the listener
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
@@ -139,7 +140,7 @@ class _ShopPortraitState extends State<ShopPortrait>
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               )),
           Positioned(
-            top: 90,
+            top: 100,
             child: Container(
               height: MediaQuery.of(context).size.height * 0.9,
               width: MediaQuery.of(context).size.width,
@@ -215,6 +216,7 @@ class _ShopPortraitState extends State<ShopPortrait>
               ),
             ),
           ),
+          Back(),
         ],
       ),
     );

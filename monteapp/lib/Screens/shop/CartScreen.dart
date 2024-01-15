@@ -6,6 +6,7 @@ import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Models/CartModel.dart';
 import 'package:monteapp/Screens/package/AddressScreen.dart';
 import 'package:monteapp/Screens/package/BuyPackage.dart';
+import 'package:monteapp/Widgets/BackButton.dart';
 
 import '../../Database/databasehelper.dart';
 
@@ -154,7 +155,8 @@ class _CartScreenPortraitState extends State<CartScreenPortrait> {
                 );
               },
             ),
-          )
+          ),
+          Back(),
         ],
       ),
     );

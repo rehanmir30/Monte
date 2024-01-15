@@ -12,4 +12,11 @@ class AddressController extends GetxController{
   TextEditingController get country=>_country;
   TextEditingController _postalCode=TextEditingController();
   TextEditingController get postalCode=>_postalCode;
+  String _paymentId="";
+  String get paymentId=>_paymentId;
+
+  setPaymentId(String id){
+    _paymentId=id;
+    update();
+  }
 }

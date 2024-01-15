@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Constants/colors.dart';
+import '../../Widgets/BackButton.dart';
 
 class VideoPlayer extends StatefulWidget {
   final List<String> videoUrls;
@@ -119,6 +120,9 @@ class _VideoPlayerState extends State<VideoPlayer> {
                     ),
             ),
           ),
+          Visibility(
+              visible: mediaVisibility,
+              child: Back()),
           Visibility(
               visible: mediaVisibility,
               child: Positioned(

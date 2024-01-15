@@ -10,6 +10,7 @@ import '../../Controllers/UserController.dart';
 import '../../Database/databasehelper.dart';
 import '../../Models/SubCategoryModel.dart';
 import '../../Models/VideoModel.dart';
+import '../../Widgets/BackButton.dart';
 
 class CategoryDetailScreen extends StatefulWidget {
   final List<SubCategoryModel> _subCategoryList;
@@ -138,7 +139,8 @@ class _CategoryDetailPortraitState extends State<CategoryDetailPortrait>
                     );
                   });
             },
-          ),
+          ).marginOnly(top: 60),
+          Back()
         ],
       ),
     );
@@ -261,7 +263,8 @@ class _CategoryDetailLandscapeState extends State<CategoryDetailLandscape>
                     );
                   },
                 ),
-              ))
+              )),
+          Back()
         ],
       ),
     );

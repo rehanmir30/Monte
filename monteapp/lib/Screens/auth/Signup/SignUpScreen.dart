@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/CountryCodeController.dart';
 import 'package:monteapp/Controllers/LevelsController.dart';
+import 'package:monteapp/Controllers/LoadingController.dart';
 import 'package:monteapp/Controllers/SignupController.dart';
 import 'package:monteapp/Models/LevelModel.dart';
 import 'package:intl/intl.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
+import 'package:monteapp/Widgets/LoadingAnimation.dart';
 import '../../../Database/databasehelper.dart';
 import '../../../Models/CountryCode.dart';
 
@@ -463,7 +465,9 @@ class _SignupPortraitState extends State<SignupPortrait>
                                 controller.phone.text.replaceFirst("0", '');
                               }
                               await DatabaseHelper().playTapAudio();
+                              Get.find<LoadingController>().setLoading(true);
                                 await DatabaseHelper().signUp();
+                              Get.find<LoadingController>().setLoading(false);
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -534,7 +538,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                 },
               ),
             ),
-          )
+          ),
+          LoadingAnimation()
         ],
       ),
     );
@@ -1001,8 +1006,9 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                 if(controller.phone.text.startsWith("0")){
                                   controller.phone.text.replaceFirst("0", '');
                                 }
+                                Get.find<LoadingController>().setLoading(true);
                                 await DatabaseHelper().signUp();
-
+                                Get.find<LoadingController>().setLoading(false);
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -1075,7 +1081,8 @@ class _SignupLandscapeState extends State<SignupLandscape>
                 )
               ],
             ).marginSymmetric(horizontal: 12),
-          ).marginOnly(left: 35)
+          ).marginOnly(left: 35),
+          LoadingAnimation()
         ],
       ),
     );

@@ -1,11 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/CountryCodeController.dart';
+import 'package:monteapp/Controllers/LoadingController.dart';
 import 'package:monteapp/Controllers/LoginController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Screens/auth/OTP/OTPScreen.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
+import 'package:monteapp/Widgets/LoadingAnimation.dart';
 
 import '../../../Models/CountryCode.dart';
 import '../Signup/SignUpScreen.dart';
@@ -217,7 +220,10 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                                 if(controller.phone.text.startsWith("0")){
                                   controller.phone.text.replaceFirst("0", '');
                                 }
+                                Get.find<LoadingController>().setLoading(true);
                                 await DatabaseHelper().login();
+                                Get.find<LoadingController>().setLoading(false);
+
                               }
 
                             },
@@ -289,6 +295,7 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                 },
               )),
         ),
+        LoadingAnimation()
 
       ],
     ));
@@ -487,9 +494,10 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                                   if(controller.phone.text.startsWith("0")){
                                     controller.phone.text.replaceFirst("0", '');
                                   }
+                                  Get.find<LoadingController>().setLoading(true);
                                   await DatabaseHelper().login();
+                                  Get.find<LoadingController>().setLoading(false);
                                 }
-
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -566,7 +574,8 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                 )
               ],
             ),
-          ).marginOnly(left: 75)
+          ).marginOnly(left: 75),
+          LoadingAnimation()
         ],
       ),
     );
