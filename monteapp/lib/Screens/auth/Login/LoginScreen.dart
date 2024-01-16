@@ -264,8 +264,12 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                           child: InkWell(
                             onTap: () async{
                               await DatabaseHelper().playTapAudio();
-                              Get.to(const SignupScreen(),
-                                  transition: Transition.zoom);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const SignupScreen()),
+                              );
+                              // Get.to(const SignupScreen(),
+                              //     transition: Transition.zoom);
                             },
                             child: Container(
                               alignment: Alignment.center,

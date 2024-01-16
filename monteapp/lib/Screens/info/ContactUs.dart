@@ -310,8 +310,9 @@ class _ContactUsLandscapeState extends State<ContactUsLandscape> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.center,
         children: [
+
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -321,8 +322,8 @@ class _ContactUsLandscapeState extends State<ContactUsLandscape> {
                     image: AssetImage("assets/images/loginBgLandscape.jpg"))),
           ),
           Container(
-            width: MediaQuery.of(context).size.width * 0.75,
-            height: MediaQuery.of(context).size.height * 0.85,
+            width: MediaQuery.of(context).size.width * 0.65,
+            height: MediaQuery.of(context).size.height * 0.7,
             decoration: const BoxDecoration(
                 image: DecorationImage(
               fit: BoxFit.fill,
@@ -584,7 +585,8 @@ class _ContactUsLandscapeState extends State<ContactUsLandscape> {
                 ],
               ).marginOnly(left: 50);
             },),
-          )
+          ),
+          Back(),
         ],
       ),
     );

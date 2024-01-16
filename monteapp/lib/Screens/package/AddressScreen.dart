@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/AddressController.dart';
+import 'package:monteapp/Widgets/BackButton.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../Database/databasehelper.dart';
@@ -422,7 +423,8 @@ class _AddressPortraitState extends State<AddressPortrait>
                 },
               ),
             ),
-          )
+          ),
+          Back(),
         ],
       ),
     );

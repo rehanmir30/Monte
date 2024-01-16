@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
+import 'package:monteapp/Widgets/BackButton.dart';
 
 class AboutMonte extends StatefulWidget {
   const AboutMonte({super.key});
@@ -50,9 +51,15 @@ class _AboutPortraitState extends State<AboutPortrait> {
                 SizedBox(
                   height: 50,
                 ),
-                Text(
-                  "About Monte Kids",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Back(),
+                    SizedBox(width: 10,),
+                    Text(
+                      "About Monte Kids",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -150,9 +157,15 @@ class _AboutLandscapeState extends State<AboutLandscape> {
                 SizedBox(
                   height: 50,
                 ),
-                Text(
-                  "About Monte Kids",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Back(),
+                    SizedBox(width: 20,),
+                    Text(
+                      "About Monte Kids",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
                 Container(
                   decoration: BoxDecoration(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Widgets/BackButton.dart';
 
 import '../../Constants/colors.dart';
 
@@ -50,9 +51,17 @@ class _TermsPortraitState extends State<TermsPortrait> {
                 SizedBox(
                   height: 50,
                 ),
-                Text(
-                  "TERMS OF SERVICE",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Back(),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "TERMS OF SERVICE",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
                 Text(
                   "Overview",
@@ -191,9 +200,17 @@ class _TermsLandscapeState extends State<TermsLandscape> {
                 SizedBox(
                   height: 50,
                 ),
-                Text(
-                  "TERMS OF SERVICE",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    Back(),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      "TERMS OF SERVICE",
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
                 Text(
                   "Overview",
