@@ -6,11 +6,13 @@ import 'package:monteapp/Screens/Videos/VideosScreen.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../Constants/colors.dart';
+import '../../Controllers/LoadingController.dart';
 import '../../Controllers/UserController.dart';
 import '../../Database/databasehelper.dart';
 import '../../Models/SubCategoryModel.dart';
 import '../../Models/VideoModel.dart';
 import '../../Widgets/BackButton.dart';
+import '../../Widgets/LoadingAnimation.dart';
 
 class CategoryDetailScreen extends StatefulWidget {
   final List<SubCategoryModel> _subCategoryList;
@@ -103,12 +105,15 @@ class _CategoryDetailPortraitState extends State<CategoryDetailPortrait>
                   builder: (context, child) {
                     return InkWell(
                       onTap: () async {
+                        Get.find<LoadingController>().setLoading(true);
                         List<VideoModel> videoList = await DatabaseHelper()
                             .getVideos(widget._subCategoryList[index]);
 
                         if (videoList.isEmpty) {
+                          Get.find<LoadingController>().setLoading(false);
                           CustomSnackbar.show("No Videos found", kRed);
                         } else {
+                          Get.find<LoadingController>().setLoading(false);
                           Get.to(VideosScreen(videoList),
                               transition: Transition.fade);
                         }
@@ -140,7 +145,8 @@ class _CategoryDetailPortraitState extends State<CategoryDetailPortrait>
                   });
             },
           ).marginOnly(top: 60),
-          Back()
+          Back(),
+          LoadingAnimation()
         ],
       ),
     );
@@ -221,12 +227,15 @@ class _CategoryDetailLandscapeState extends State<CategoryDetailLandscape>
                       builder: (context, child) {
                         return InkWell(
                           onTap: ()async{
+                            Get.find<LoadingController>().setLoading(true);
                             List<VideoModel> videoList = await DatabaseHelper()
                                 .getVideos(widget._subCategoryList[index]);
                             await DatabaseHelper().playTapAudio();
                             if (videoList.isEmpty) {
+                              Get.find<LoadingController>().setLoading(false);
                               CustomSnackbar.show("No Videos found", kRed);
                             } else {
+                              Get.find<LoadingController>().setLoading(false);
                               Get.to(VideosScreen(videoList), transition: Transition.fade);
                             }
                           },
@@ -264,7 +273,8 @@ class _CategoryDetailLandscapeState extends State<CategoryDetailLandscape>
                   },
                 ),
               )),
-          Back()
+          Back(),
+          LoadingAnimation()
         ],
       ),
     );

@@ -412,8 +412,8 @@ class _SignupPortraitState extends State<SignupPortrait>
                                             style: const TextStyle(
                                                 color: Colors.white),
                                           ),
-                                          onTap: () {
-                                            controller.setSelectedLevel(model);
+                                          onTap: () async{
+                                            await controller.setSelectedLevel(model);
                                             Navigator.pop(context);
                                           },
                                         );

@@ -97,8 +97,10 @@ class DatabaseHelper {
     if (response.statusCode == 200) {
       UserModel user = UserModel.fromMap(responseJson['data']);
       LoginController loginController = Get.find<LoginController>();
-      loginController.phone != signupController.phone;
+      // loginController.phone != signupController.phone;
+      loginController.setPhone(signupController.phone);
       userController.setUser(user);
+      await login();
       Get.to(const OTPScreen(), transition: Transition.circularReveal);
       CustomSnackbar.show(responseJson['message'], kRed);
       return;
@@ -108,9 +110,10 @@ class DatabaseHelper {
       Get.offAll(LoginScreen(), transition: Transition.circularReveal);
     } else {
       if (kDebugMode) {
+        print("Phone: ${countryCodeController.selectedCountryCode?.code}${signupController.phone.text}");
         print(responseJson['message']);
       }
-      CustomSnackbar.show(responseJson['message'], kRed);
+      CustomSnackbar.show("error: ${responseJson['message']}", kRed);
       return;
     }
   }
@@ -132,13 +135,14 @@ class DatabaseHelper {
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
       CustomSnackbar.show(responseJson['message'], kRed);
+      Get.back();
       Get.to(const OTPScreen(), transition: Transition.circularReveal);
       return;
     } else if (response.statusCode == 401) {
       CustomSnackbar.show(responseJson['message'], kRed);
       return;
     } else {
-      CustomSnackbar.show(responseJson['message'], kRed);
+      CustomSnackbar.show("${responseJson['message']}", kRed);
       Get.to(SignupScreen(), transition: Transition.zoom);
       return;
     }

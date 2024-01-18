@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Controllers/CartController.dart';
+import 'package:monteapp/Controllers/LoadingController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
 import 'package:monteapp/Controllers/UserController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
@@ -15,6 +16,7 @@ import 'package:monteapp/Screens/shop/ShopScreen.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../Constants/colors.dart';
+import '../../Widgets/LoadingAnimation.dart';
 import '../Category/CategoryDetailScreen.dart';
 import '../info/AboutMonte.dart';
 import '../info/termsOfUse.dart';
@@ -233,7 +235,8 @@ class _HomePortraitState extends State<HomePortrait>
                   }
               )
 
-          )
+          ),
+          LoadingAnimation()
         ],
       ),
     );
@@ -288,12 +291,17 @@ class _BalloonTileState extends State<BalloonTile>
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+        Get.find<LoadingController>().setLoading(true);
         List<SubCategoryModel> subCategoryList =
         await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
         if (subCategoryList.isNotEmpty) {
           Get.to(CategoryDetailScreen(subCategoryList),
               transition: Transition.circularReveal);
+          Get.find<LoadingController>().setLoading(false);
+
         } else {
+          Get.find<LoadingController>().setLoading(false);
+
           CustomSnackbar.show("No data found", kRed);
         }
       },
@@ -526,7 +534,8 @@ class _HomeLandscapeState extends State<HomeLandscape>
                   }
               )
 
-          )
+          ),
+          LoadingAnimation()
         ],
       ),
     );
@@ -591,14 +600,17 @@ class _FanShapeState extends State<FanShape>
                 angle: _animation.value,
                 child: InkWell(
                   onTap: () async {
+                    Get.find<LoadingController>().setLoading(true);
                     List<SubCategoryModel> subCategoryList =
                     await DatabaseHelper().getSubCategories(
                         widget.mainCategoryModel);
                     await DatabaseHelper().playTapAudio();
                     if (subCategoryList.isNotEmpty) {
+                      Get.find<LoadingController>().setLoading(false);
                       Get.to(CategoryDetailScreen(subCategoryList),
                           transition: Transition.circularReveal);
                     } else {
+                      Get.find<LoadingController>().setLoading(false);
                       CustomSnackbar.show("No data found", kRed);
                     }
                   },

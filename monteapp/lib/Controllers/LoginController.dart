@@ -45,4 +45,9 @@ class LoginController extends GetxController {
       }
     });
   }
+
+  setPhone(TextEditingController phone){
+    _phone=phone;
+    update();
+  }
 }
