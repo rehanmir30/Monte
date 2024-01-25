@@ -386,7 +386,7 @@ class _AddressPortraitState extends State<AddressPortrait>
                                 CustomSnackbar.show("All fields are required", kRed);
                                 return;
                               }else{
-                                await DatabaseHelper().makeStripePayment(widget.price);
+                                await DatabaseHelper().makeStripePayment(widget.price,widget.callingScreenName);
                                 // Get.to(BuyPackage(widget.price, "BuyPackage"),
                                 //     transition: Transition.upToDown);
                               }
@@ -803,7 +803,7 @@ class _AddressLandscapeState extends State<AddressLandscape> with SingleTickerPr
                                   CustomSnackbar.show("All fields are required", kRed);
                                   return;
                                 }else{
-                                  await DatabaseHelper().makeStripePayment(widget.price);
+                                  await DatabaseHelper().makeStripePayment(widget.price,widget.callingScreenName);
                                   // Get.to(BuyPackage(widget.price, "BuyPackage"),
                                   //     transition: Transition.upToDown);
                                 }

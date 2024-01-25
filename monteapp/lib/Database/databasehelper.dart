@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
+
+// import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:monteapp/Constants/SharedPref/shared_pref_services.dart';
@@ -32,6 +33,7 @@ import 'package:monteapp/Screens/auth/Signup/SignUpScreen.dart';
 import 'package:monteapp/Screens/home/Home.dart';
 import 'package:monteapp/Screens/package/BuyPackage.dart';
 import 'package:monteapp/Widgets/CustomSnackbar.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../Constants/ApiConstants.dart';
 import '../Models/UserModel.dart';
@@ -72,7 +74,7 @@ class DatabaseHelper {
   }
 
   //sign nup user
-  Future<void> signUp() async {
+  Future<void> signUp(context) async {
     SignupController signupController = Get.find<SignupController>();
     UserController userController = Get.find<UserController>();
     CountryCodeController countryCodeController =
@@ -100,9 +102,9 @@ class DatabaseHelper {
       // loginController.phone != signupController.phone;
       loginController.setPhone(signupController.phone);
       userController.setUser(user);
-      await login();
-      Get.to(const OTPScreen(), transition: Transition.circularReveal);
-      CustomSnackbar.show(responseJson['message'], kRed);
+      await login(context);
+      // Get.to(const OTPScreen(), transition: Transition.circularReveal);
+      // CustomSnackbar.show(responseJson['message'], kRed);
       return;
     } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
@@ -110,7 +112,8 @@ class DatabaseHelper {
       Get.offAll(LoginScreen(), transition: Transition.circularReveal);
     } else {
       if (kDebugMode) {
-        print("Phone: ${countryCodeController.selectedCountryCode?.code}${signupController.phone.text}");
+        print(
+            "Phone: ${countryCodeController.selectedCountryCode?.code}${signupController.phone.text}");
         print(responseJson['message']);
       }
       CustomSnackbar.show("error: ${responseJson['message']}", kRed);
@@ -119,8 +122,9 @@ class DatabaseHelper {
   }
 
   //login user
-  Future<void> login() async {
+  Future<void> login(context) async {
     LoginController loginController = Get.find<LoginController>();
+    UserController userController = Get.find<UserController>();
     CountryCodeController countryCodeController =
         Get.find<CountryCodeController>();
     Map<String, String> headers = {
@@ -135,8 +139,22 @@ class DatabaseHelper {
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
       CustomSnackbar.show(responseJson['message'], kRed);
-      Get.back();
-      Get.to(const OTPScreen(), transition: Transition.circularReveal);
+      UserModel user = UserModel.fromMap(responseJson['data']);
+      String token = responseJson['token'];
+      user.accessToken = token;
+      userController.setUser(user);
+      await SharedPref.saveUser(user);
+      if (user.approved == "0") {
+        CustomSnackbar.show(responseJson['message'], kRed);
+        await getPackage(
+            user.detail?.levelId ?? "0", user.accessToken, context);
+      } else {
+        CustomSnackbar.show(responseJson['message'], kRed);
+        await getMainCategories();
+        Get.offAll(const Home(), transition: Transition.circularReveal);
+      }
+      // Get.back();
+      // Get.to(const OTPScreen(), transition: Transition.circularReveal);
       return;
     } else if (response.statusCode == 401) {
       CustomSnackbar.show(responseJson['message'], kRed);
@@ -219,52 +237,6 @@ class DatabaseHelper {
       Get.offAll(LoginScreen(), transition: Transition.circularReveal);
     } else {
       print("Api error: ${responseJson['message']}");
-    }
-  }
-
-  //make package payment
-  Future<void> makePayment(var price) async {
-    UserController userController = Get.find<UserController>();
-    CardController cardController = Get.find<CardController>();
-    AddressController addressController = Get.find<AddressController>();
-    PackageController packageController = Get.find<PackageController>();
-    List<String> parts = cardController.expDateController.text.split("-");
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "Authorization": "Bearer ${userController.userModel.accessToken}"
-    };
-    Map<String, dynamic> params = {
-      'fullName': cardController.nameController.text,
-      "cardNumber": cardController.cardNumberController.text,
-      "month": parts[1],
-      "year": parts[0],
-      "cvv": cardController.cvvController.text,
-      "price": price,
-      "user_id": "${userController.userModel.id}",
-      "bundleId": "${packageController.packageModel.data!.bundle!.id}",
-      "address": "${addressController.homeAddress}",
-      "city": "${addressController.city}",
-      "state": "${addressController.state}",
-      "country": "${addressController.country}",
-      "pincode": "${addressController.postalCode}",
-    };
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.makePayment);
-    var response = await http.post(url, headers: headers, body: params);
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      CustomSnackbar.show(responseJson['message'], kRed);
-      await getMainCategories();
-      return;
-    } else if (response.statusCode == 401) {
-      CustomSnackbar.show("Please login again", kRed);
-      SharedPref.removeStudent();
-      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
-    } else {
-      if (kDebugMode) {
-        print(responseJson['message']);
-      }
-      CustomSnackbar.show(responseJson['message'], kRed);
-      return;
     }
   }
 
@@ -488,6 +460,48 @@ class DatabaseHelper {
     }
   }
 
+  //make package payment
+  Future<void> makePayment(var price) async {
+    UserController userController = Get.find<UserController>();
+    AddressController addressController = Get.find<AddressController>();
+    PackageController packageController = Get.find<PackageController>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Authorization": "Bearer ${userController.userModel.accessToken}"
+    };
+    Map<String, dynamic> params = {
+
+      "amount": price,
+      "user_id": "${userController.userModel.id}",
+      "bundleId": "${packageController.packageModel.data!.bundle!.id}",
+      "address": "${addressController.homeAddress}",
+      "city": "${addressController.city}",
+      "state": "${addressController.state}",
+      "country": "${addressController.country}",
+      "pincode": "${addressController.postalCode}",
+      "payment_id": "${addressController.paymentId}",
+      "receipt_url": "",
+    };
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.makePayment);
+    var response = await http.post(url, headers: headers, body: params);
+    var responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      CustomSnackbar.show(responseJson['message'], kRed);
+      await getMainCategories();
+      return;
+    } else if (response.statusCode == 401) {
+      CustomSnackbar.show("Please login again", kRed);
+      SharedPref.removeStudent();
+      Get.offAll(LoginScreen(), transition: Transition.circularReveal);
+    } else {
+      if (kDebugMode) {
+        print(responseJson['message']);
+      }
+      CustomSnackbar.show(responseJson['message'], kRed);
+      return;
+    }
+  }
+
   //Place order
   Future<void> placeOrder(String price) async {
     UserController userController = Get.find<UserController>();
@@ -501,11 +515,7 @@ class DatabaseHelper {
     };
     print("heellllll: ${userController.userModel.id}");
     Map<String, dynamic> params = {
-      // 'fullName': cardController.nameController.text,
-      // "cardNumber": cardController.cardNumberController.text,
-      // "month": parts[1],
-      // "year": parts[0],
-      // "cvv": cardController.cvvController.text,
+
       "userId": userController.userModel.id,
       "amount": price,
       "userId": "${userController.userModel.id}",
@@ -539,105 +549,132 @@ class DatabaseHelper {
     }
   }
 
-  //Get Country Codes
-  Future<void> getCountryCodes() async {
-    CountryCodeController _countryCodeController =
-        Get.find<CountryCodeController>();
-    Map<String, String> headers = {
-      "Accept": "application/json",
-    };
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getCountryCodes);
-    var response = await http.get(url, headers: headers);
-    var responseJson = json.decode(response.body);
-    if (response.statusCode == 200) {
-      for (var code in responseJson['data']) {
-        CountryCode countryCode = CountryCode.fromMap(code);
-        _countryCodeController.addCountryCode(countryCode);
-        print("countryCodevalue: ${countryCode.code}");
+
+String tempPrice='';
+String tempScreen='';
+  //Razorpay functions
+  Future<void> makeStripePayment(String price,String callingScreen) async {
+    UserController _userController = Get.find<UserController>();
+    late Razorpay _razorpay=Razorpay();
+    String integerPart = price.split('.')[0];
+tempScreen=callingScreen;
+    tempPrice=integerPart;
+    var options = {
+      'key': 'rzp_test_fgz4kGF4KNakjY',
+      'amount': '${integerPart}00',
+      'name': 'Monte Kids',
+      'prefill': {
+        'contact': '${_userController.userModel.phone}',
+        'email': '${_userController.userModel.email}'
+      },
+      'external': {
+        'wallets': ['paytm']
       }
-      _countryCodeController
-          .setSelectedCountry(_countryCodeController.countryCodeList[1]);
-    } else {
-      CustomSnackbar.show("Failed to get country codes", kRed);
+    };
+    try {
+      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
+      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
+      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
+      _razorpay.open(options);
+    } catch (e) {
+      print("Make payment error: " + e.toString());
     }
   }
 
+  void handlePaymentSuccess(PaymentSuccessResponse response)async{
+    AddressController _addressController=Get.find<AddressController>();
+    print("Razor success: ${response.paymentId}");
+    _addressController.setPaymentId(response.paymentId!);
+    if(tempScreen=="BuyPackage"){
+await makePayment(tempPrice);
+    }else{
+      await placeOrder(tempPrice);
+    }
+
+  }
+  void handlePaymentError(PaymentFailureResponse response){
+    print("Razor fail: ${response.message}");
+  }
+  void handleExternalWallet(ExternalWalletResponse response){
+    print("Razor External: ${response.walletName}");
+  }
   //Strip payment functions start
-  Future<void> makeStripePayment(String price) async {
-    Stripe.publishableKey =
-        "pk_live_51O2pdJSIJU0eR5PXPwM4BRkgfLHeOwdAMbsSgOUEOjDHJ9SWAw0zzmH0n0XTXtti0H9PGMdr3az1DuQjep0ylEXL004vew5qd6";
-    Map<String, dynamic>? paymentIntent;
-    await confirmPayment(paymentIntent, price);
-  }
-
-  confirmPayment(paymentIntent, price) async {
-    try {
-      paymentIntent = await createPaymentIntent(price);
-
-      var gpay = PaymentSheetGooglePay(
-        merchantCountryCode: "IN",
-        currencyCode: "INR",
-        testEnv: false,
-      );
-      await Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: paymentIntent!["client_secret"],
-              merchantDisplayName: "Monte",
-              googlePay: gpay));
-      await displayPaymentSheet(price);
-    } catch (e) {
-      throw Exception("Confirm Payment: " + e.toString());
-    }
-  }
-
-  createPaymentIntent(String price) async {
-    UserController userController = Get.find<UserController>();
-
-    try {
-      String integerPart = price.split('.')[0];
-      Map<String, dynamic> body = {
-        "amount": "${integerPart}00",
-        "currency": "INR",
-        "description": "Shop items purchase",
-      };
-      Map<String, dynamic> userBody = {
-        "email": "${userController.userModel.email}",
-        "name": "${userController.userModel.name}",
-      };
-      http.Response createUserResponse = await http.post(
-          Uri.parse("https://api.stripe.com/v1/customers"),
-          body: userBody,
-          headers: {
-            "Authorization":
-                "Bearer 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",
-            "Content-Type": "application/x-www-form-urlencoded"
-          });
-      http.Response response = await http.post(
-          Uri.parse("https://api.stripe.com/v1/payment_intents"),
-          body: body,
-          headers: {
-            "Authorization":
-                "Bearer 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",
-            "Content-Type": "application/x-www-form-urlencoded"
-          });
-      var responseJson = json.decode(response.body);
-      Get.find<AddressController>().setPaymentId(responseJson['id']);
-      return json.decode(response.body);
-    } catch (e) {
-      throw Exception("Create payment intent: " + e.toString());
-    }
-  }
-
-  displayPaymentSheet(price) async {
-    try {
-      await Stripe.instance.presentPaymentSheet();
-      print("Done");
-      await placeOrder(price);
-    } catch (e) {
-      print("Failed");
-      print("Display Payment Sheet: ${e.toString()}");
-    }
-  }
+  // Future<void> makeStripePayment(String price) async {
+  //   Stripe.publishableKey =
+  //       "pk_live_51O2pdJSIJU0eR5PXPwM4BRkgfLHeOwdAMbsSgOUEOjDHJ9SWAw0zzmH0n0XTXtti0H9PGMdr3az1DuQjep0ylEXL004vew5qd6";
+  //   Map<String, dynamic>? paymentIntent;
+  //   await confirmPayment(paymentIntent, price);
+  // }
+  //
+  // confirmPayment(paymentIntent, price) async {
+  //   try {
+  //     paymentIntent = await createPaymentIntent(price);
+  //
+  //     var gpay = PaymentSheetGooglePay(
+  //       merchantCountryCode: "IN",
+  //       currencyCode: "INR",
+  //       testEnv: false,
+  //     );
+  //     await Stripe.instance.initPaymentSheet(
+  //         paymentSheetParameters: SetupPaymentSheetParameters(
+  //             paymentIntentClientSecret: paymentIntent!["client_secret"],
+  //             merchantDisplayName: "Monte",
+  //             googlePay: gpay));
+  //     await displayPaymentSheet(price);
+  //   } catch (e) {
+  //     throw Exception("Confirm Payment: " + e.toString());
+  //   }
+  // }
+  //
+  // createPaymentIntent(String price) async {
+  //   UserController userController = Get.find<UserController>();
+  //
+  //   try {
+  //     String integerPart = price.split('.')[0];
+  //     Map<String, dynamic> body = {
+  //       "amount": "${integerPart}00",
+  //       "currency": "INR",
+  //       "description": "Shop items purchase",
+  //     };
+  //     Map<String, dynamic> userBody = {
+  //       "email": "${userController.userModel.email}",
+  //       "name": "${userController.userModel.name}",
+  //     };
+  //     http.Response createUserResponse = await http.post(
+  //         Uri.parse("https://api.stripe.com/v1/customers"),
+  //         body: userBody,
+  //         headers: {
+  //           "Authorization":
+  //               "Bearer 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",
+  //           "Content-Type": "application/x-www-form-urlencoded"
+  //         });
+  //     http.Response response = await http.post(
+  //         Uri.parse("https://api.stripe.com/v1/payment_intents"),
+  //         body: body,
+  //         headers: {
+  //           "Authorization":
+  //               "Bearer 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",
+  //           "Content-Type": "application/x-www-form-urlencoded"
+  //         });
+  //     var responseJson = json.decode(response.body);
+  //     Get.find<AddressController>().setPaymentId(responseJson['id']);
+  //     return json.decode(response.body);
+  //   } catch (e) {
+  //     throw Exception("Create payment intent: " + e.toString());
+  //   }
+  // }
+  //
+  // //order placing here
+  // displayPaymentSheet(price) async {
+  //   try {
+  //     await Stripe.instance.presentPaymentSheet();
+  //     print("Done");
+  //     await placeOrder(price);
+  //   } catch (e) {
+  //     print("Failed");
+  //     print("Display Payment Sheet: ${e.toString()}");
+  //   }
+  // }
   //Strip payment functions end
 
   //contact us
@@ -655,11 +692,34 @@ class DatabaseHelper {
     };
     var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
-    if(response.statusCode==200&&responseJson['success']==true){
+    if (response.statusCode == 200 && responseJson['success'] == true) {
       Get.back();
       CustomSnackbar.show(responseJson['message'], kRed);
-    }else{
+    } else {
       CustomSnackbar.show(responseJson['message'], kRed);
+    }
+  }
+
+  //Get Country Codes
+  Future<void> getCountryCodes() async {
+    CountryCodeController _countryCodeController =
+    Get.find<CountryCodeController>();
+    Map<String, String> headers = {
+      "Accept": "application/json",
+    };
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.getCountryCodes);
+    var response = await http.get(url, headers: headers);
+    var responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      for (var code in responseJson['data']) {
+        CountryCode countryCode = CountryCode.fromMap(code);
+        _countryCodeController.addCountryCode(countryCode);
+        print("countryCodevalue: ${countryCode.code}");
+      }
+      _countryCodeController
+          .setSelectedCountry(_countryCodeController.countryCodeList[1]);
+    } else {
+      CustomSnackbar.show("Failed to get country codes", kRed);
     }
   }
 }

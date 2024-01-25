@@ -466,7 +466,7 @@ class _SignupPortraitState extends State<SignupPortrait>
                               }
                               await DatabaseHelper().playTapAudio();
                               Get.find<LoadingController>().setLoading(true);
-                                await DatabaseHelper().signUp();
+                                await DatabaseHelper().signUp(context);
                               Get.find<LoadingController>().setLoading(false);
                             },
                             child: Container(
@@ -1007,7 +1007,7 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                   controller.phone.text.replaceFirst("0", '');
                                 }
                                 Get.find<LoadingController>().setLoading(true);
-                                await DatabaseHelper().signUp();
+                                await DatabaseHelper().signUp(context);
                                 Get.find<LoadingController>().setLoading(false);
                               },
                               child: Container(

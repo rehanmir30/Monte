@@ -221,7 +221,7 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                                   controller.phone.text.replaceFirst("0", '');
                                 }
                                 Get.find<LoadingController>().setLoading(true);
-                                await DatabaseHelper().login();
+                                await DatabaseHelper().login(context);
                                 Get.find<LoadingController>().setLoading(false);
 
                               }
@@ -499,7 +499,7 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                                     controller.phone.text.replaceFirst("0", '');
                                   }
                                   Get.find<LoadingController>().setLoading(true);
-                                  await DatabaseHelper().login();
+                                  await DatabaseHelper().login(context);
                                   Get.find<LoadingController>().setLoading(false);
                                 }
                               },

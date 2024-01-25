@@ -339,18 +339,10 @@ class _BuyPackagePortraitState extends State<BuyPackagePortrait>
                                       "All fields are required", kRed);
                                   return;
                                 } else {
-                                  if(widget.callingScreenName=="BuyPackage"){
-
                                     // await DatabaseHelper()
                                     //     .makePayment(widget.price);
-
                                     //my own stripe code
-                                    await DatabaseHelper().makeStripePayment(widget.price);
-                                  }else{
-                                    await DatabaseHelper().placeOrder(widget.price);
-
-
-                                  }
+                                    await DatabaseHelper().makeStripePayment(widget.price,widget.callingScreenName);
                                 }
                               },
                               child: Container(

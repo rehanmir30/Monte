@@ -53,7 +53,11 @@ class _TermsPortraitState extends State<TermsPortrait> {
                 ),
                 Row(
                   children: [
-                    Back(),
+                    InkWell(
+                        onTap: (){
+                          Get.back();
+                        },
+                        child: Image.asset("assets/images/back.png",width: 40,height: 40,)),
                     SizedBox(
                       width: 10,
                     ),
@@ -202,7 +206,11 @@ class _TermsLandscapeState extends State<TermsLandscape> {
                 ),
                 Row(
                   children: [
-                    Back(),
+                    InkWell(
+                        onTap: (){
+                          Get.back();
+                        },
+                        child: Image.asset("assets/images/back.png",width: 40,height: 40,)),
                     SizedBox(
                       width: 20,
                     ),

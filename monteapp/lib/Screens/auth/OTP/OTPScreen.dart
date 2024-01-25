@@ -174,6 +174,8 @@ class _OTPPortraitState extends State<OTPPortrait>
                                 ),
                               ),
                             ),
+
+
                             Material(
                                 elevation: 10,
                                 color: Colors.transparent,
@@ -225,13 +227,11 @@ class _OTPPortraitState extends State<OTPPortrait>
                                   onTap: () async {
                                     if(!controller.isButtonDisabled){
                                       await DatabaseHelper().playTapAudio();
-                                      await DatabaseHelper().login();
                                       controller.startTimer();
+                                      await DatabaseHelper().login(context);
                                     }else{
                                       CustomSnackbar.show("Wait few minutes to get OTP again", kRed);
                                     }
-
-
                                   },
                                   child: Container(
                                     alignment: Alignment.center,
@@ -360,6 +360,7 @@ class _OTPLandscapeState extends State<OTPLandscape> {
                             ),
                           ),
                         ),
+
                         Material(
                             elevation: 10,
                             color: Colors.transparent,
@@ -368,22 +369,17 @@ class _OTPLandscapeState extends State<OTPLandscape> {
                               onTap: () async {
                                 await DatabaseHelper().playTapAudio();
                                 if(controller.otp.text.isNotEmpty){
-                                  if(controller.timerSeconds!=120){
-                                    CustomSnackbar.show("Please wait few seconds to resend OTP", kRed);
-                                  }else{
-                                    controller.startTimer();
-                                    Get.find<LoadingController>().setLoading(true);
-                                    await DatabaseHelper().loginVerifyOTP(context);
-                                    Get.find<LoadingController>().setLoading(false);
-                                  }
+                                  Get.find<LoadingController>().setLoading(true);
+                                  await DatabaseHelper().loginVerifyOTP(context);
+                                  Get.find<LoadingController>().setLoading(false);
                                 }else{
                                   CustomSnackbar.show("OTP field should not be empty", kRed);
                                 }
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                width: 70,
-                                height: 20,
+                                width: 120,
+                                height: 30,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(60),
                                   border: Border.all(color: Colors.yellow),
@@ -398,18 +394,106 @@ class _OTPLandscapeState extends State<OTPLandscape> {
                                   ),
                                 ),
                                 child: Text(
-                                  controller.timerSeconds ==120
-                                      ? "Next"
-                                      : "Resend",
+                                  "Next",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ),
+                            )).marginOnly(top: 12),
+                        Visibility(
+                          visible: controller.isButtonDisabled,
+                          child: Text(controller.formattedTimer()),
+                        ).marginOnly(top: 8),
+                        Material(
+                            elevation: 10,
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(60),
+                            child: InkWell(
+                              onTap: () async {
+                                if(!controller.isButtonDisabled){
+                                  await DatabaseHelper().playTapAudio();
+                                  controller.startTimer();
+                                  await DatabaseHelper().login(context);
+
+                                }else{
+                                  CustomSnackbar.show("Wait few minutes to get OTP again", kRed);
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                width: 100,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(60),
+                                  border: Border.all(color: Colors.yellow),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xff104e99),
+                                      Color(0xff8dabc9)
+                                    ],
+                                    // Define your gradient colors
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                  ),
+                                ),
+                                child: Text(
+                                  "Resend OTP",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 12),
                                 ),
                               ),
                             )).marginOnly(top: 10),
-                        Visibility(
-                          visible: controller.isButtonDisabled,
-                          child: Text(controller.formattedTimer()),
-                        ).marginOnly(top: 8)
+
+                        // Material(
+                        //     elevation: 10,
+                        //     color: Colors.transparent,
+                        //     borderRadius: BorderRadius.circular(60),
+                        //     child: InkWell(
+                        //       onTap: () async {
+                        //         await DatabaseHelper().playTapAudio();
+                        //         if(controller.otp.text.isNotEmpty){
+                        //           if(controller.timerSeconds!=120){
+                        //             CustomSnackbar.show("Please wait few seconds to resend OTP", kRed);
+                        //           }else{
+                        //             controller.startTimer();
+                        //             Get.find<LoadingController>().setLoading(true);
+                        //             await DatabaseHelper().loginVerifyOTP(context);
+                        //             Get.find<LoadingController>().setLoading(false);
+                        //           }
+                        //         }else{
+                        //           CustomSnackbar.show("OTP field should not be empty", kRed);
+                        //         }
+                        //       },
+                        //       child: Container(
+                        //         alignment: Alignment.center,
+                        //         width: 70,
+                        //         height: 20,
+                        //         decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(60),
+                        //           border: Border.all(color: Colors.yellow),
+                        //           gradient: const LinearGradient(
+                        //             colors: [
+                        //               Color(0xff104e99),
+                        //               Color(0xff8dabc9)
+                        //             ],
+                        //             // Define your gradient colors
+                        //             begin: Alignment.bottomCenter,
+                        //             end: Alignment.topCenter,
+                        //           ),
+                        //         ),
+                        //         child: Text(
+                        //           controller.timerSeconds ==120
+                        //               ? "Next"
+                        //               : "Resend",
+                        //           style: TextStyle(
+                        //               color: Colors.white, fontSize: 12),
+                        //         ),
+                        //       ),
+                        //     )).marginOnly(top: 10),
+                        // Visibility(
+                        //   visible: controller.isButtonDisabled,
+                        //   child: Text(controller.formattedTimer()),
+                        // ).marginOnly(top: 8)
                       ],
                     );
                   },

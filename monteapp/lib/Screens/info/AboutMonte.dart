@@ -53,7 +53,11 @@ class _AboutPortraitState extends State<AboutPortrait> {
                 ),
                 Row(
                   children: [
-                    Back(),
+                    InkWell(
+                        onTap: (){
+                          Get.back();
+                        },
+                        child: Image.asset("assets/images/back.png",width: 40,height: 40,)),
                     SizedBox(width: 10,),
                     Text(
                       "About Monte Kids",
@@ -159,7 +163,11 @@ class _AboutLandscapeState extends State<AboutLandscape> {
                 ),
                 Row(
                   children: [
-                    Back(),
+                    InkWell(
+                        onTap: (){
+                          Get.back();
+                        },
+                        child: Image.asset("assets/images/back.png",width: 40,height: 40,)),
                     SizedBox(width: 20,),
                     Text(
                       "About Monte Kids",
