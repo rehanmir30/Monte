@@ -560,7 +560,7 @@ String tempScreen='';
 tempScreen=callingScreen;
     tempPrice=integerPart;
     var options = {
-      'key': 'rzp_test_fgz4kGF4KNakjY',
+      'key': 'rzp_live_DyeGBJFCZrlxAq',
       'amount': '${integerPart}00',
       'name': 'Monte Kids',
       'prefill': {
