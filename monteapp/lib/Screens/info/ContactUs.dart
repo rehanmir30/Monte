@@ -292,6 +292,134 @@ class _ContactUsPortraitState extends State<ContactUsPortrait> {
                 },)
                 ),
           ),
+          Positioned(
+              right: 20,
+              top: 60,
+              child: InkWell(
+                  onTap: (){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.scaleDown,
+                                  image:
+                                  AssetImage("assets/images/loginLandscapeContainer.png"),
+                                )),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Image.asset(
+                                    "assets/images/balloons.png",
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                ),
+                                Text(
+                                  "Are you sure!",
+                                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                                  textAlign: TextAlign.left,
+                                ).marginOnly(
+                                  top: 12,
+                                ),
+                                Text(
+                                  "You want to delete your account?",
+                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Material(
+                                          elevation: 10,
+                                          color: Colors.transparent,
+                                          borderRadius: BorderRadius.circular(60),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              await DatabaseHelper().playTapAudio();
+                                              CustomSnackbar.show("Request to delete account has been sent to admin. Your account will be disabled within 24 hours", kRed);
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 100,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(60),
+                                                border: Border.all(color: Colors.yellow),
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xff104e99),
+                                                    Color(0xff8dabc9)
+                                                  ],
+                                                  // Define your gradient colors
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                    color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          )).marginOnly(top: 20),
+                                      SizedBox(width: 12,),
+                                      Material(
+                                          elevation: 10,
+                                          color: Colors.transparent,
+                                          borderRadius: BorderRadius.circular(60),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              await DatabaseHelper().playTapAudio();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 100,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(60),
+                                                border: Border.all(color: Colors.yellow),
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xffc10946),
+                                                    Color(0xff834457)
+                                                  ],
+                                                  // Define your gradient colors
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                "No",
+                                                style: TextStyle(
+                                                    color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          )).marginOnly(top: 20),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ).marginSymmetric(vertical: 20, horizontal: 30),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Text("Delete account?",style: TextStyle(color: kRed,fontSize: 18,fontWeight: FontWeight.bold),))),
         ],
       ),
     );
@@ -586,6 +714,134 @@ class _ContactUsLandscapeState extends State<ContactUsLandscape> {
               ).marginOnly(left: 50);
             },),
           ),
+          Positioned(
+              right: 20,
+              top: 60,
+              child: InkWell(
+                  onTap: (){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.scaleDown,
+                                  image:
+                                  AssetImage("assets/images/loginLandscapeContainer.png"),
+                                )),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Image.asset(
+                                    "assets/images/balloons.png",
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                ),
+                                Text(
+                                  "Are you sure!",
+                                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                                  textAlign: TextAlign.left,
+                                ).marginOnly(
+                                  top: 12,
+                                ),
+                                Text(
+                                  "You want to delete your account?",
+                                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Material(
+                                          elevation: 10,
+                                          color: Colors.transparent,
+                                          borderRadius: BorderRadius.circular(60),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              await DatabaseHelper().playTapAudio();
+                                              CustomSnackbar.show("Request to delete account has been sent to admin. Your account will be disabled within 24 hours", kRed);
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 100,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(60),
+                                                border: Border.all(color: Colors.yellow),
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xff104e99),
+                                                    Color(0xff8dabc9)
+                                                  ],
+                                                  // Define your gradient colors
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                "Yes",
+                                                style: TextStyle(
+                                                    color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          )).marginOnly(top: 20),
+                                      SizedBox(width: 12,),
+                                      Material(
+                                          elevation: 10,
+                                          color: Colors.transparent,
+                                          borderRadius: BorderRadius.circular(60),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              await DatabaseHelper().playTapAudio();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              width: 100,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(60),
+                                                border: Border.all(color: Colors.yellow),
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    Color(0xffc10946),
+                                                    Color(0xff834457)
+                                                  ],
+                                                  // Define your gradient colors
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                ),
+                                              ),
+                                              child: const Text(
+                                                "No",
+                                                style: TextStyle(
+                                                    color: Colors.white, fontSize: 12),
+                                              ),
+                                            ),
+                                          )).marginOnly(top: 20),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ).marginSymmetric(vertical: 20, horizontal: 30),
+                          ),
+                        );
+                      },
+                    );
+                    },
+                  child: Text("Delete account?",style: TextStyle(color: kRed,fontSize: 18,fontWeight: FontWeight.bold),))),
           Back(),
         ],
       ),
