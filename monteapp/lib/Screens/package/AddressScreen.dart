@@ -286,6 +286,7 @@ class _AddressPortraitState extends State<AddressPortrait>
                           height: 40,
                           child: TextFormField(
                             controller: controller.country,
+                            readOnly: true,
                             onTap: () async {
                               await DatabaseHelper().playTapAudio();
                             },
@@ -702,6 +703,7 @@ class _AddressLandscapeState extends State<AddressLandscape> with SingleTickerPr
                                 height: 40,
                                 child: TextFormField(
                                   controller: controller.country,
+                                  readOnly: true,
                                   onTap: () async {
                                     await DatabaseHelper().playTapAudio();
                                   },

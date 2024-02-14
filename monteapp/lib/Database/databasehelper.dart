@@ -90,9 +90,7 @@ class DatabaseHelper {
       'dob': signupController.age.text,
       'level_id': signupController.selectedLevel?.id.toString() ?? ""
     };
-    print("Params: ${params}");
-    print("Params: ${signupController.phone.text}");
-    print("Params: ${countryCodeController.selectedCountryCode?.code}");
+
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.register);
     var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
@@ -220,14 +218,13 @@ class DatabaseHelper {
       "Accept": "application/json",
       "Authorization": "Bearer $accessToken"
     };
+    print("Bearer $accessToken");
     var url = Uri.parse(
         ApiConstants.baseUrl + ApiConstants.getPackage + id.toString());
     var response = await http.get(url, headers: headers);
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
-      print("Bearer: ${accessToken}");
       PackageModel package = PackageModel.fromMap(responseJson);
-      print("Bearer: ${package.data?.package?.name}");
       Get.find<PackageController>().setPackageModel(package);
       Get.find<PackageController>().setPrice(true);
       Get.to(PackageScreen(), transition: Transition.downToUp);
@@ -519,16 +516,16 @@ class DatabaseHelper {
       "userId": userController.userModel.id,
       "amount": price,
       "userId": "${userController.userModel.id}",
-      "address": "${addressController.homeAddress}",
-      "city": "${addressController.city}",
-      "state": "${addressController.state}",
-      "country": "${addressController.country}",
-      "pincode": "${addressController.postalCode}",
+      "address": "${addressController.homeAddress.text}",
+      "city": "${addressController.city.text}",
+      "state": "${addressController.state.text}",
+      "country": "${addressController.country.text}",
+      "pincode": "${addressController.postalCode.text}",
       "payment_id": "${addressController.paymentId}",
       "receipt_url": "",
     };
     var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.orderPayment);
-
+    print("heellllll: ${params}");
     var response = await http.post(url, headers: headers, body: params);
     var responseJson = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -561,6 +558,7 @@ tempScreen=callingScreen;
     tempPrice=integerPart;
     var options = {
       'key': 'rzp_live_DyeGBJFCZrlxAq',
+      // 'key': 'rzp_test_fgz4kGF4KNakjY',
       'amount': '${integerPart}00',
       'name': 'Monte Kids',
       'prefill': {
@@ -583,7 +581,6 @@ tempScreen=callingScreen;
 
   void handlePaymentSuccess(PaymentSuccessResponse response)async{
     AddressController _addressController=Get.find<AddressController>();
-    print("Razor success: ${response.paymentId}");
     _addressController.setPaymentId(response.paymentId!);
     if(tempScreen=="BuyPackage"){
 await makePayment(tempPrice);
@@ -721,5 +718,22 @@ await makePayment(tempPrice);
     } else {
       CustomSnackbar.show("Failed to get country codes", kRed);
     }
+  }
+
+  Future<int> getTrialPeriodTime() async{
+    int period=5;
+    Map<String, String> headers = {
+      "Accept": "application/json",
+    };
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.trialVersion);
+    var response = await http.get(url, headers: headers);
+    var responseJson = json.decode(response.body);
+    if (response.statusCode == 200) {
+      String time=responseJson['data']['value'];
+      period=int.parse(time);
+    } else {
+      CustomSnackbar.show("Failed to get Trial period", kRed);
+    }
+    return period;
   }
 }

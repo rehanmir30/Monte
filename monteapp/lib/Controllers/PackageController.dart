@@ -6,7 +6,9 @@ class PackageController extends GetxController{
   PackageModel get packageModel=>_packageModel;
 
   int _price=0;
+  int _taxPrice=0;
   int get price=>_price;
+  int get taxPrice=>_taxPrice;
 
   setPrice(bool value){
     if(value){
@@ -17,6 +19,12 @@ class PackageController extends GetxController{
       double pkgPrice = double.parse(_packageModel.data!.package!.price);
       _price=pkgPrice.toInt();
     }
+    update();
+  }
+  addTax(double percent){
+    var tax=(_price*percent);
+    _taxPrice=_price+tax.toInt();
+
     update();
   }
 

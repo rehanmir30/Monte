@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/CountryCodeController.dart';
@@ -249,7 +250,7 @@ class _SignupPortraitState extends State<SignupPortrait>
                               DateTime? picked = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
-                                firstDate: DateTime(2020),
+                                firstDate: DateTime(2010),
                                 lastDate: DateTime(2025),
                                 builder: (BuildContext context, Widget? child) {
                                   return Theme(
@@ -349,6 +350,9 @@ class _SignupPortraitState extends State<SignupPortrait>
                                         color: Colors.white, fontSize: 14),
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.phone,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(10),
+                                    ],
                                     decoration: InputDecoration(
                                       hintText: 'Phone Number',
                                       // filled: true,
@@ -463,6 +467,11 @@ class _SignupPortraitState extends State<SignupPortrait>
                             onTap: () async {
                               if(controller.phone.text.startsWith("0")){
                                 controller.phone.text.replaceFirst("0", '');
+                              }else if (!RegExp(r'^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[a-zA-Z]+').hasMatch(controller.email.text))
+                              {
+                                CustomSnackbar.show(
+                                    "Email format is not correct", kRed);
+                                return;
                               }
                               await DatabaseHelper().playTapAudio();
                               Get.find<LoadingController>().setLoading(true);
@@ -727,7 +736,7 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                     DateTime? picked = await showDatePicker(
                                       context: context,
                                       initialDate: DateTime.now(),
-                                      firstDate: DateTime(2020),
+                                      firstDate: DateTime(2010),
                                       lastDate: DateTime(2025),
                                       builder: (BuildContext context,
                                           Widget? child) {
@@ -882,6 +891,9 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                           onTap: () async {
                                             await DatabaseHelper().playTapAudio();
                                           },
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(10),
+                                          ],
                                           style: const TextStyle(
                                               color: Colors.white, fontSize: 14),
                                           textAlign: TextAlign.center,
@@ -1005,6 +1017,12 @@ class _SignupLandscapeState extends State<SignupLandscape>
                                 await DatabaseHelper().playTapAudio();
                                 if(controller.phone.text.startsWith("0")){
                                   controller.phone.text.replaceFirst("0", '');
+                                }
+                                else if (!RegExp(r'^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[a-zA-Z]+').hasMatch(controller.email.text))
+                                {
+                                  CustomSnackbar.show(
+                                      "Email format is not correct", kRed);
+                                  return;
                                 }
                                 Get.find<LoadingController>().setLoading(true);
                                 await DatabaseHelper().signUp(context);

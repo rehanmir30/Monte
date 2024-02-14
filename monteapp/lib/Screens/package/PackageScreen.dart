@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/PackageController.dart';
+import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Models/PackageModel.dart';
+import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
+import '../home/Home.dart';
 import 'AddressScreen.dart';
 import 'BuyPackage.dart';
 
@@ -37,7 +40,7 @@ class PackagePortrait extends StatefulWidget {
 }
 
 class _PackagePortraitState extends State<PackagePortrait> {
-  bool isChecked = true;
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +131,7 @@ class _PackagePortraitState extends State<PackagePortrait> {
                             },
                           ),
                           Text(
-                            'Order bundle for your Kid',
+                            'Order bundle for your Kid (${controller.packageModel.data!.bundle!.price})',
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w800),
@@ -162,17 +165,15 @@ class _PackagePortraitState extends State<PackagePortrait> {
                         borderRadius: BorderRadius.circular(20),
                         child: InkWell(
                           onTap: () {
-                            Get.to(AddressScreen(controller.packageModel.data!.package!
-                                .price ??
-                                0,
+                            if(isChecked){
+                              controller.addTax(0.23);
+                            }else{
+                              controller.addTax(0.18);
+                            }
+                            Get.to(AddressScreen(
+                                    "${controller.taxPrice}" ??
+                                "0",
                                 "BuyPackage"),transition: Transition.leftToRight);
-                            // Get.to(
-                            //     BuyPackage(
-                            //         controller.packageModel.data!.package!
-                            //                 .price ??
-                            //             0,
-                            //         "BuyPackage"),
-                            //     transition: Transition.upToDown);
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.6,
@@ -200,13 +201,19 @@ class _PackagePortraitState extends State<PackagePortrait> {
           Positioned(
               top: 40,
               right: 0,
-              child: Text(
-                "Trial version",
-                style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ).marginOnly(right: 10))
+              child: InkWell(
+                onTap: () async{
+                  await DatabaseHelper().getMainCategories();
+                  Get.offAll(const Home(), transition: Transition.circularReveal);
+                },
+                child: Text(
+                  "Trial version",
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ).marginOnly(right: 10),
+              ))
         ],
       ),
     );
@@ -222,7 +229,7 @@ class PackageLandscape extends StatefulWidget {
 
 class _PackageLandscapeState extends State<PackageLandscape> {
 
-  bool isChecked = true;
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -311,7 +318,7 @@ class _PackageLandscapeState extends State<PackageLandscape> {
                             },
                           ),
                           Text(
-                            'Order bundle for your Kid',
+                            'Order bundle for your Kid (${controller.packageModel.data!.bundle!.price})',
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w800),
@@ -360,17 +367,16 @@ class _PackageLandscapeState extends State<PackageLandscape> {
                         borderRadius: BorderRadius.circular(20),
                         child: InkWell(
                           onTap: () {
-                            Get.to(AddressScreen(controller.packageModel.data!.package!
-                                .price ??
-                                0,
+                            if(isChecked){
+                              controller.addTax(0.23);
+                            }else{
+                              controller.addTax(0.18);
+                            }
+
+                            Get.to(AddressScreen(
+                                "${controller.taxPrice}" ??
+                                    "0",
                                 "BuyPackage"),transition: Transition.leftToRight);
-                            // Get.to(
-                            //     BuyPackage(
-                            //         controller.packageModel.data!.package!
-                            //                 .price ??
-                            //             0,
-                            //         "BuyPackage"),
-                            //     transition: Transition.upToDown);
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * 0.2,
@@ -394,7 +400,23 @@ class _PackageLandscapeState extends State<PackageLandscape> {
                 ],
               ).marginSymmetric(horizontal: 35);
             }),
-          )
+          ),
+          Positioned(
+              top: 40,
+              right: 0,
+              child: InkWell(
+                onTap: ()async{
+                  await DatabaseHelper().getMainCategories();
+                  Get.offAll(const Home(), transition: Transition.circularReveal);
+                },
+                child: Text(
+                  "Trial version",
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ).marginOnly(right: 10),
+              ))
         ],
       ),
     );

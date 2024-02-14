@@ -7,6 +7,7 @@ import 'package:monteapp/Models/CartModel.dart';
 import 'package:monteapp/Screens/package/AddressScreen.dart';
 import 'package:monteapp/Screens/package/BuyPackage.dart';
 import 'package:monteapp/Widgets/BackButton.dart';
+import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../Database/databasehelper.dart';
 
@@ -121,12 +122,24 @@ class _CartScreenPortraitState extends State<CartScreenPortrait> {
                                   children: [
                                     Expanded(
                                         flex:1,
+                                        child: Text("Tax",style: TextStyle(fontWeight: FontWeight.w700),textAlign: TextAlign.center,)),
+                                    Expanded(
+                                        flex:1,
+                                        child: Text("5%",style: TextStyle(fontWeight: FontWeight.w700),textAlign: TextAlign.center,)),
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        flex:1,
                                         child: Text("Total Price",style: TextStyle(fontWeight: FontWeight.w700),textAlign: TextAlign.center,)),
                                     Expanded(
                                         flex:1,
                                         child: Text("${controller.cartModel?.totalPrice??0}",style: TextStyle(fontWeight: FontWeight.w700),textAlign: TextAlign.center,)),
                                   ],
                                 ),
+
                               ],
                             ),
                           ),
@@ -135,7 +148,13 @@ class _CartScreenPortraitState extends State<CartScreenPortrait> {
                               child: InkWell(
                                 onTap:()async{
                                   // Get.to(BuyPackage(controller.cartModel?.totalPrice, "CartScreen"));
-                                  Get.to(AddressScreen(controller.cartModel?.totalPrice, "CartScreen"));
+                                  if(controller.cartModel!=null){
+                                    Get.to(AddressScreen(controller.cartModel!.totalPrice, "CartScreen"));
+                                  }else{
+                                    CustomSnackbar.show("No items added", kRed);
+                                    return;
+                                  }
+
                                 },
                                 child: Container(
                                   width: 150,

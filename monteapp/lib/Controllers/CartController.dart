@@ -8,7 +8,17 @@ class CartController extends GetxController{
 
   setCartModel(CartModel? cartModel){
     _cartModel=cartModel;
+    if(cartModel?.totalPrice!=null){
+      setCartTotalPrice();
+    }
     update();
+  }
+  setCartTotalPrice(){
+    double numberDouble = double.parse(_cartModel?.totalPrice);
+    int price=numberDouble.toInt();
+    var tax=(price*0.05);
+    _cartModel?.totalPrice=price+tax;
+    _cartModel?.totalPrice=_cartModel?.totalPrice.toString();
   }
 
 

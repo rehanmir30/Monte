@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:monteapp/Constants/SharedPref/shared_pref_services.dart';
 import 'package:monteapp/Controllers/CartController.dart';
 import 'package:monteapp/Controllers/LoadingController.dart';
 import 'package:monteapp/Controllers/MainCategoryController.dart';
@@ -10,6 +11,7 @@ import 'package:monteapp/Controllers/UserController.dart';
 import 'package:monteapp/Database/databasehelper.dart';
 import 'package:monteapp/Models/MainCategoryModel.dart';
 import 'package:monteapp/Models/SubCategoryModel.dart';
+import 'package:monteapp/Screens/auth/Login/LoginScreen.dart';
 import 'package:monteapp/Screens/info/ContactUs.dart';
 import 'package:monteapp/Screens/shop/CartScreen.dart';
 import 'package:monteapp/Screens/shop/ShopScreen.dart';
@@ -17,6 +19,7 @@ import 'package:monteapp/Widgets/CustomSnackbar.dart';
 
 import '../../Constants/colors.dart';
 import '../../Widgets/LoadingAnimation.dart';
+import '../../main.dart';
 import '../Category/CategoryDetailScreen.dart';
 import '../info/AboutMonte.dart';
 import '../info/termsOfUse.dart';
@@ -28,7 +31,9 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver{
+  Timer? _timer;
+  UserController userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +50,122 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    if(userController.userModel.approved=="0"){
+      _startPopupTimer();
+    }
     getCart();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _stopPopupTimer();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _startPopupTimer();
+    } else if (state == AppLifecycleState.paused) {
+      _stopPopupTimer();
+    }
+  }
+  void _startPopupTimer() async{
+    int time=await DatabaseHelper().getTrialPeriodTime();
+    print("Timer started");
+    _timer?.cancel();
+    _timer = Timer(Duration(minutes: time), () {
+      _showPopup();
+    });
+  }
+  void _stopPopupTimer() {
+    print("Timer stoped");
+    _timer?.cancel();
+  }
+  void _showPopup() {
+    if (navigatorKey.currentState?.overlay?.context != null) {
+      showDialog(
+        context: navigatorKey.currentState!.overlay!.context,
+        barrierDismissible: false, // Prevents closing the dialog by tapping outside of it
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40), // Curved borders
+              side: BorderSide(color: Colors.yellow, width: 3), // Border color and width
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: kPink,
+                borderRadius: BorderRadius.circular(40)
+              ),
+              padding: EdgeInsets.all(26.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // To make the dialog compact
+                children: <Widget>[
+                  const Text(
+                    'Trial version',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  const Text(
+                    'It seems like your trial version time has ended. Please restart the app to get trial time again',style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20
+                  ),
+                  ),
+                  const SizedBox(height: 24.0),
+                  Material(
+                      elevation: 10,
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(60),
+                      child: InkWell(
+                        onTap: () async{
+                          await DatabaseHelper().playTapAudio();
+                          await SharedPref.removeStudent();
+                          Get.offAll(const LoginScreen(),transition: Transition.zoom);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 120,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(60),
+                            border: Border.all(color: Colors.yellow),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xff104e99),
+                                Color(0xff8dabc9)
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                      )).marginOnly(top: 20),
+                  // ElevatedButton(
+                  //   child: Text('Close'),
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+
+    }
+  }
   getCart() async {
     await DatabaseHelper().getCart();
   }
@@ -157,6 +275,7 @@ class _HomePortraitState extends State<HomePortrait>
 
                         return BalloonTile(
                           imagePath: balloonImage,
+                          index: index,
                           mainCategoryModel: controller.mainCategoryList[index],
                         );
                       },
@@ -245,9 +364,10 @@ class _HomePortraitState extends State<HomePortrait>
 
 class BalloonTile extends StatefulWidget {
   final String imagePath;
+  final int index;
   final MainCategoryModel mainCategoryModel;
 
-  BalloonTile({required this.imagePath, required this.mainCategoryModel});
+  BalloonTile({required this.imagePath,required this.index ,required this.mainCategoryModel});
 
   @override
   State<BalloonTile> createState() => _BalloonTileState();
@@ -257,6 +377,7 @@ class _BalloonTileState extends State<BalloonTile>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  UserController _userController=Get.find<UserController>();
 
   @override
   void initState() {
@@ -291,19 +412,174 @@ class _BalloonTileState extends State<BalloonTile>
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        Get.find<LoadingController>().setLoading(true);
-        List<SubCategoryModel> subCategoryList =
-        await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
-        if (subCategoryList.isNotEmpty) {
-          Get.to(CategoryDetailScreen(subCategoryList),
-              transition: Transition.circularReveal);
-          Get.find<LoadingController>().setLoading(false);
+        if(_userController.userModel.approved=="0"){
+          if(widget.index==0){
+            Get.find<LoadingController>().setLoading(true);
+            List<SubCategoryModel> subCategoryList =
+            await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
+            if (subCategoryList.isNotEmpty) {
+              Get.to(CategoryDetailScreen(subCategoryList),
+                  transition: Transition.circularReveal);
+              Get.find<LoadingController>().setLoading(false);
 
-        } else {
-          Get.find<LoadingController>().setLoading(false);
+            } else {
+              Get.find<LoadingController>().setLoading(false);
+              CustomSnackbar.show("No data found", kRed);
+            }
+          }else{
+            showDialog(
+              context: context,
+              barrierDismissible: false, // Prevents closing the dialog by tapping outside of it
+              builder: (context) {
+                return Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40), // Curved borders
+                    side: BorderSide(color: Colors.yellow, width: 3), // Border color and width
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: kPink,
+                        borderRadius: BorderRadius.circular(40)
+                    ),
+                    padding: EdgeInsets.all(26.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min, // To make the dialog compact
+                      children: <Widget>[
+                        const Text(
+                          'Trial version',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 20
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'It seems like you are using trial version. Please buy subscription for ',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              TextSpan(
+                                text: 'Rs.840 ',
+                                style: TextStyle(
+                                    color: kRed,
+                                    fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(
+                                text: 'only for an year to get access to full content.',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                        //  Text(
+                        //   'It seems like you are using trial version. Please buy subscription for Rs.840 only for an year to get access to full content',style: TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 20,
+                        //   fontWeight: FontWeight.bold
+                        // ),
+                        // ),
+                        const SizedBox(height: 24.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Material(
+                                elevation: 10,
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(60),
+                                child: InkWell(
+                                  onTap: () async{
+                                    await DatabaseHelper().playTapAudio();
+                                    Get.back();
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: 120,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      border: Border.all(color: Colors.yellow),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xffef097a),
+                                          Color(0xffad66b6)
+                                        ],
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  ),
+                                )).marginOnly(top: 20),
+                            Material(
+                                elevation: 10,
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(60),
+                                child: InkWell(
+                                  onTap: () async{
+                                    await DatabaseHelper().playTapAudio();
+                                    await SharedPref.removeStudent();
+                                    Get.offAll(const LoginScreen(),transition: Transition.zoom);
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: 120,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      border: Border.all(color: Colors.yellow),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xff104e99),
+                                          Color(0xff8dabc9)
+                                        ],
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Buy now!",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                    ),
+                                  ),
+                                )).marginOnly(top: 20),
+                          ],
+                        ),
 
-          CustomSnackbar.show("No data found", kRed);
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+
+          }
+        }else{
+          Get.find<LoadingController>().setLoading(true);
+          List<SubCategoryModel> subCategoryList =
+          await DatabaseHelper().getSubCategories(widget.mainCategoryModel);
+          if (subCategoryList.isNotEmpty) {
+            Get.to(CategoryDetailScreen(subCategoryList),
+                transition: Transition.circularReveal);
+            Get.find<LoadingController>().setLoading(false);
+
+          } else {
+            Get.find<LoadingController>().setLoading(false);
+            CustomSnackbar.show("No data found", kRed);
+          }
         }
+
       },
       child: AnimatedBuilder(
         animation: _animation,
@@ -556,7 +832,7 @@ class _FanShapeState extends State<FanShape>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-
+  UserController _userController=Get.find<UserController>();
   @override
   void initState() {
     super.initState();
@@ -600,18 +876,174 @@ class _FanShapeState extends State<FanShape>
                 angle: _animation.value,
                 child: InkWell(
                   onTap: () async {
-                    Get.find<LoadingController>().setLoading(true);
-                    List<SubCategoryModel> subCategoryList =
-                    await DatabaseHelper().getSubCategories(
-                        widget.mainCategoryModel);
-                    await DatabaseHelper().playTapAudio();
-                    if (subCategoryList.isNotEmpty) {
-                      Get.find<LoadingController>().setLoading(false);
-                      Get.to(CategoryDetailScreen(subCategoryList),
-                          transition: Transition.circularReveal);
-                    } else {
-                      Get.find<LoadingController>().setLoading(false);
-                      CustomSnackbar.show("No data found", kRed);
+                    if(_userController.userModel.approved=="0"){
+                      if(widget.index==0){
+                        Get.find<LoadingController>().setLoading(true);
+                        List<SubCategoryModel> subCategoryList =
+                        await DatabaseHelper().getSubCategories(
+                            widget.mainCategoryModel);
+                        await DatabaseHelper().playTapAudio();
+                        if (subCategoryList.isNotEmpty) {
+                          Get.find<LoadingController>().setLoading(false);
+                          Get.to(CategoryDetailScreen(subCategoryList),
+                              transition: Transition.circularReveal);
+                        } else {
+                          Get.find<LoadingController>().setLoading(false);
+                          CustomSnackbar.show("No data found", kRed);
+                        }
+                      }else{
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false, // Prevents closing the dialog by tapping outside of it
+                          builder: (context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40), // Curved borders
+                                side: BorderSide(color: Colors.yellow, width: 3), // Border color and width
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: kPink,
+                                    borderRadius: BorderRadius.circular(40)
+                                ),
+                                padding: EdgeInsets.all(26.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min, // To make the dialog compact
+                                  children: <Widget>[
+                                    const Text(
+                                      'Trial version',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 20
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'It seems like you are using trial version. Please buy subscription for ',
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 20),
+                                          ),
+                                          TextSpan(
+                                            text: 'Rs.840 ',
+                                            style: TextStyle(
+                                                color: kRed,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+                                            text: 'only for an year to get access to full content.',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // const Text(
+                                    //   'It seems like you are using trial version. Please buy subscription for Rs.840 only for an year to get access to full content',style: TextStyle(
+                                    //     color: Colors.white,
+                                    //     fontSize: 20,
+                                    //   fontWeight: FontWeight.bold
+                                    // ),
+                                    // ),
+                                    const SizedBox(height: 24.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Material(
+                                            elevation: 10,
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.circular(60),
+                                            child: InkWell(
+                                              onTap: () async{
+                                                await DatabaseHelper().playTapAudio();
+                                                Get.back();
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                width: 120,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(60),
+                                                  border: Border.all(color: Colors.yellow),
+                                                  gradient: const LinearGradient(
+                                                    colors: [
+                                                      Color(0xffef097a),
+                                                      Color(0xffad66b6)
+                                                    ],
+                                                    begin: Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                  ),
+                                                ),
+                                                child: const Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                      color: Colors.white, fontSize: 12),
+                                                ),
+                                              ),
+                                            )).marginOnly(top: 20),
+                                        Material(
+                                            elevation: 10,
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.circular(60),
+                                            child: InkWell(
+                                              onTap: () async{
+                                                await DatabaseHelper().playTapAudio();
+                                                await SharedPref.removeStudent();
+                                                Get.offAll(const LoginScreen(),transition: Transition.zoom);
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                width: 120,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(60),
+                                                  border: Border.all(color: Colors.yellow),
+                                                  gradient: const LinearGradient(
+                                                    colors: [
+                                                      Color(0xff104e99),
+                                                      Color(0xff8dabc9)
+                                                    ],
+                                                    begin: Alignment.bottomCenter,
+                                                    end: Alignment.topCenter,
+                                                  ),
+                                                ),
+                                                child: const Text(
+                                                  "Buy now!",
+                                                  style: TextStyle(
+                                                      color: Colors.white, fontSize: 12),
+                                                ),
+                                              ),
+                                            )).marginOnly(top: 20),
+                                      ],
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    }else{
+                      Get.find<LoadingController>().setLoading(true);
+                      List<SubCategoryModel> subCategoryList =
+                      await DatabaseHelper().getSubCategories(
+                          widget.mainCategoryModel);
+                      await DatabaseHelper().playTapAudio();
+                      if (subCategoryList.isNotEmpty) {
+                        Get.find<LoadingController>().setLoading(false);
+                        Get.to(CategoryDetailScreen(subCategoryList),
+                            transition: Transition.circularReveal);
+                      } else {
+                        Get.find<LoadingController>().setLoading(false);
+                        CustomSnackbar.show("No data found", kRed);
+                      }
                     }
                   },
                   child: Container(

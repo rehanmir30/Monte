@@ -228,7 +228,7 @@ class _VideoScreenLandscapeState extends State<VideoScreenLandscape>
               left: 20,
               top: 80,
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height ,
                 width: MediaQuery.of(context).size.width,
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -286,7 +286,7 @@ class _VideoScreenLandscapeState extends State<VideoScreenLandscape>
                                   ),
                                   Container(
                                     width: 150,
-                                    height: 80,
+                                    // height: 80,
                                     decoration: BoxDecoration(
                                         color: kRed,
                                         border: Border.all(color: kYellow),

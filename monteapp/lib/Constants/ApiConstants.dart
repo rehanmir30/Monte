@@ -52,5 +52,7 @@ class ApiConstants{
   //Contact us
   static const postContactUs = "message?";
 
+  //trial version
+  static const trialVersion = "trailversion/time";
 
 }

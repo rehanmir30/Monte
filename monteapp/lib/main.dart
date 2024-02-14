@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
@@ -11,6 +13,9 @@ import 'Controllers/UserController.dart';
 import 'Database/databasehelper.dart';
 import 'Models/UserModel.dart';
 import 'Screens/home/Home.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 
 void main() async {
   await WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +43,7 @@ class _MyAppState extends State<MyApp> {
         initialBinding: InitController(),
         title: "Monte App",
         debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
         theme: ThemeData(
           fontFamily: "forte",
         ),
@@ -56,10 +62,12 @@ class SplashScreenLandscape extends StatefulWidget {
 class _SplashScreenLandscapeState extends State<SplashScreenLandscape> {
   VideoPlayerController? _controller;
 bool skipVisibility=false;
+
+
+
   @override
   void initState() {
     super.initState();
-    // Set the preferred orientation to landscape when this screen is created
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -102,6 +110,7 @@ bool skipVisibility=false;
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     _controller?.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

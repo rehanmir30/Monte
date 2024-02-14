@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:monteapp/Constants/colors.dart';
 import 'package:monteapp/Controllers/CountryCodeController.dart';
@@ -167,6 +168,7 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                                 ),
                                 Expanded(
                                   child: TextFormField(
+
                                     onTap: () async {
                                       await DatabaseHelper().playTapAudio();
                                     },
@@ -175,7 +177,11 @@ class _LoginPortraitState extends State<LoginPortrait>with SingleTickerProviderS
                                     keyboardType: TextInputType.phone,
                                     style: const TextStyle(
                                         color: Colors.white, fontSize: 14),
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(10),
+                                    ],
                                     decoration: InputDecoration(
+
                                       hintText: 'Phone',
                                       // filled: true,
                                       hintStyle: const TextStyle(
@@ -444,6 +450,9 @@ class _LoginLandscapeState extends State<LoginLandscape> with SingleTickerProvid
                                   ),
                                   Expanded(
                                     child: TextFormField(
+                                      inputFormatters: [
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
                                       onTap: () async {
                                         await DatabaseHelper().playTapAudio();
                                       },
