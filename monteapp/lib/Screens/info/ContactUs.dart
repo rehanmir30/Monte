@@ -53,6 +53,7 @@ class _ContactUsPortraitState extends State<ContactUsPortrait> {
           Back(),
           Positioned(
               top: 60,
+              left: 80,
               child: Text(
                 "Contact us",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

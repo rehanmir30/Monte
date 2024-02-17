@@ -465,7 +465,7 @@ class _BalloonTileState extends State<BalloonTile>
                               TextSpan(
                                 text: 'Rs.840 ',
                                 style: TextStyle(
-                                    color: kRed,
+                                    color: Colors.white,
                                     fontSize: 20,
                                 fontWeight: FontWeight.bold),
                               ),
@@ -930,7 +930,7 @@ class _FanShapeState extends State<FanShape>
                                           TextSpan(
                                             text: 'Rs.840 ',
                                             style: TextStyle(
-                                                color: kRed,
+                                                color: Colors.white,
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold),
                                           ),

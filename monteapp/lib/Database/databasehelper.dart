@@ -226,7 +226,7 @@ class DatabaseHelper {
     if (response.statusCode == 200) {
       PackageModel package = PackageModel.fromMap(responseJson);
       Get.find<PackageController>().setPackageModel(package);
-      Get.find<PackageController>().setPrice(true);
+      Get.find<PackageController>().setPrice(false);
       Get.to(PackageScreen(), transition: Transition.downToUp);
     } else if (response.statusCode == 401) {
       CustomSnackbar.show("Please login again", kRed);
