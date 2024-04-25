@@ -17,7 +17,7 @@ PODS:
   - razorpay_flutter (1.1.10):
     - Flutter
     - razorpay-pod
-  - Reachability (3.2)
+  - Reachability (3.7.5)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -31,9 +31,9 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - razorpay_flutter (from `.symlinks/plugins/razorpay_flutter/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
 
 SPEC REPOS:
@@ -54,24 +54,24 @@ EXTERNAL SOURCES:
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/ios"
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   razorpay_flutter:
     :path: ".symlinks/plugins/razorpay_flutter/ios"
   shared_preferences_foundation:
-    :path: ".symlinks/plugins/shared_preferences_foundation/ios"
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/ios"
 
 SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   razorpay-pod: 29b4d9e0a868a9234eaa7be0fbd09484bbfa9973
   razorpay_flutter: 84b3bfd206ae9c9c2a9ba585524a1b3d8102b6c1
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  Reachability: 44d15955cdaee6cef699877e1f6647dd6f6698cc
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   Toast: ec33c32b8688982cecc6348adeae667c1b9938da
   video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126

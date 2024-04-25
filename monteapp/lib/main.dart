@@ -86,22 +86,26 @@ bool skipVisibility=false;
               // Video has finished playing
               UserModel? _user=await SharedPref.getUser();
               if(_user==null){
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.portraitUp,
+                  DeviceOrientation.portraitDown,
+                ]);
                 SystemChrome.setPreferredOrientations(DeviceOrientation.values);
                 Get.offAll(const LoginScreen(), transition: Transition.downToUp);
               }else{
                 Get.find<UserController>().setUser(_user);
                 await DatabaseHelper().getMainCategories();
-                // _controller?.dispose();
+                SystemChrome.setPreferredOrientations([
+                  DeviceOrientation.portraitUp,
+                  DeviceOrientation.portraitDown,
+                ]);
                 SystemChrome.setPreferredOrientations(DeviceOrientation.values);
                 Get.offAll(const Home(), transition: Transition.circularReveal);
               }
-              // Get.offAll(const LoginScreen(), transition: Transition.downToUp);
             }
           });
         });
       });
-
-
   }
 
   @override
@@ -110,8 +114,6 @@ bool skipVisibility=false;
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     _controller?.dispose();
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,9 +137,17 @@ bool skipVisibility=false;
                   onPressed: () async {
                     UserModel? _user=await SharedPref.getUser();
                     if(_user==null){
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                        DeviceOrientation.portraitDown,
+                      ]);
                       SystemChrome.setPreferredOrientations(DeviceOrientation.values);
                       Get.offAll(const LoginScreen(), transition: Transition.downToUp);
                     }else{
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                        DeviceOrientation.portraitDown,
+                      ]);
                       SystemChrome.setPreferredOrientations(DeviceOrientation.values);
                       Get.find<UserController>().setUser(_user);
                       await DatabaseHelper().getMainCategories();

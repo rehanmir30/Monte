@@ -62,14 +62,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
     super.dispose();
     _stopPopupTimer();
   }
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _startPopupTimer();
-    } else if (state == AppLifecycleState.paused) {
-      _stopPopupTimer();
-    }
-  }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     _startPopupTimer();
+  //   } else if (state == AppLifecycleState.paused) {
+  //     _stopPopupTimer();
+  //   }
+  // }
   void _startPopupTimer() async{
     int time=await DatabaseHelper().getTrialPeriodTime();
     print("Timer started");
@@ -166,6 +166,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
 
     }
   }
+
   getCart() async {
     await DatabaseHelper().getCart();
   }
@@ -463,7 +464,7 @@ class _BalloonTileState extends State<BalloonTile>
                                     color: Colors.white, fontSize: 20),
                               ),
                               TextSpan(
-                                text: 'Rs.840 ',
+                                text: 'Rs.6999 ',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
@@ -928,7 +929,7 @@ class _FanShapeState extends State<FanShape>
                                                 color: Colors.white, fontSize: 20),
                                           ),
                                           TextSpan(
-                                            text: 'Rs.840 ',
+                                            text: 'Rs.6999 ',
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 20,
